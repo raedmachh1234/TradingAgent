@@ -1,0 +1,97 @@
+repo,skill,decision,target,det,data,duplicates,backtestable,reason,prod_loc,test_loc,tests_passed_here,third_party
+trader-skill,trader-risk,MERGE,risk gate,D,local files only,"drawdown-circuit-breaker, pre-trade-discipline-gate, day-trader risk","n/a, runs inside replay",Sequential batch check bound to an order fingerprint; rule core of the single risk gate,334,158,17,
+trader-skill,trader-broker,KEEP,proposal schema,D,none; Alpaca stock-order field names,day-trader broker,n/a,"Keep ticket schema and fingerprint binding as the proposal payload; drop chat 'yes' parsing (ApprovalService replaces it); extend fields for stop, target and CFD size",419,188,14,
+trader-skill,trader-budget,MERGE,position sizing,D,local files only,"position-sizer, futures-position-sizer, day-trader budget",n/a,Cash buffer and per-name cap become constraints of the one sizing module,422,141,18,
+trader-skill,trader-news,MERGE,news ingestion,D*,SEC 8-K feed (public); Yahoo RSS (personal use),market-news-analyst,only what we archive from now on,Keep SEC 8-K and RSS ingestion; Yahoo feed replaced or kept as non-live fallback; LLM may only classify headlines,381,126,13,
+trader-skill,trader-analyst,KEEP,fundamentals reader,D*,"SEC XBRL company facts (public, 10 requests/s, User-Agent required)",us-stock-analysis,"yes, by filing date",Useful only if US equities are in scope,476,136,13,
+trader-skill,trader-copycat,KEEP,13F parser (edgar13f.py only),D*,SEC EDGAR (public); OpenFIGI,institutional-flow-tracker,"yes, by filing date (45-day lag)","One 13F implementation; 'copy an investor' is a candidate strategy, not an enabled feature",884,278,24,
+trader-skill,trader-pelosi,CUT,,D*,House Clerk PDFs; needs pdftotext,,,Per brief; fragile PDF parsing and long disclosure lag,485,169,16,
+trader-skill,trader-tax,CUT,,D,local files only,kanchi-dividend-us-tax-accounting,,US tax-lot and wash-sale rules; jurisdiction-specific,485,163,14,
+trader-skill,trader-alerts,KEEP,market calendar (NYSE table only),D,holiday table in code; prices via Yahoo and Stooq,_market_calendar.py copied into 8 skills,n/a,Keep the NYSE holiday and half-day table as an offline fixture for the one calendar module; drop price alerts,511,195,18,
+trader-skill,trader-rebalance,KEEP,rebalancer,D,local files only,portfolio-manager,"n/a, runs inside replay",Drift-band rebalancer; feeds the capital allocator,282,120,10,
+trader-skill,trader-screener,MERGE,screener engine,D,local metrics file,every screener in claude-trading-skills,"yes, if metrics are point-in-time",Smallest generic rule engine; becomes the single screener engine,268,111,10,
+day-trader-skill,trader-risk,MERGE,risk gate,D,local files only,trader-skill risk,"n/a, runs inside replay",Later rewrite: entries vs exits asymmetry and a pinned clock; preferred merge source,718,442,43,
+day-trader-skill,trader-broker,MERGE,proposal schema,D,none,trader-skill broker,n/a,Diff against v1 and take the stricter rules,610,264,18,
+day-trader-skill,trader-budget,MERGE,position sizing,D,local files only,trader-skill budget,n/a,Diff against v1 and take the stricter rules,767,316,31,
+day-trader-skill,trader-timemachine,KEEP,replay simulator (method),D*,Yahoo 5-minute bars (unofficial),,yes,Seeded bootstrap replay plus the same rule on past sessions; re-implemented on our data layer with standard errors,837,519,47,
+day-trader-skill,trader-entry,CANDIDATE,ORB sub-bot,D*,Yahoo intraday bars (unofficial),,"yes, with licensed intraday data","Opening-range breakout on completed bars, long only; must pass the backtest gate",822,516,39,
+day-trader-skill,trader-exit,CANDIDATE,ORB sub-bot,D*,Yahoo intraday bars (unofficial),,"yes, with licensed intraday data","Stop and target planner (range, percent, ATR); part of the ORB candidate",633,249,14,
+day-trader-skill,trader-scanner,CUT,,D*,Nasdaq Trader lists; Yahoo,trader-screener,,Universe scan tied to Yahoo; screener engine plus data layer replace it,943,558,36,
+day-trader-skill,trader-alerts,CUT,,D,Yahoo and Stooq,trader-skill alerts,,Duplicate; calendar table taken from trader-skill,684,386,30,
+day-trader-skill,trader-analyst,CUT,,D*,SEC XBRL,trader-skill analyst (1 line differs),,Duplicate,476,136,13,
+day-trader-skill,trader-news,CUT,,D*,"SEC, Yahoo RSS",trader-skill news,,Duplicate; diff for improvements during the merge,465,174,17,
+day-trader-skill,trader-pelosi,CUT,,D*,House Clerk,trader-skill pelosi (1 line differs),,Per brief,485,169,16,
+claude-trading-skills,backtest-expert,KEEP,research checklist,D,none,edge-strategy-reviewer,n/a,"Keep the red-flag checks; replace the heuristic 0-100 score with deflated Sharpe, PBO and confidence intervals",551,804,88,
+claude-trading-skills,breadth-chart-analyst,CUT,,L,"chart images, OpenCV",market-breadth-analyzer,no,Reads chart images,1538,1673,212,PIL;cv2;numpy
+claude-trading-skills,breakout-trade-planner,CUT,,D,consumes vcp-screener output,,,"Only useful downstream of VCP, which is cut pending backtest",1071,715,84,pandas_market_calendars
+claude-trading-skills,canslim-screener,CUT,,D*,FMP key required; bs4 scraping,,needs point-in-time fundamentals,Cut pending backtest; re-enters only through the candidate gate,4009,3605,429,bs4;requests
+claude-trading-skills,contrarian-setup-gate,CUT,,D,none,,,Final step of the COT chain,1198,2194,312,
+claude-trading-skills,cot-contrarian-detector,CUT,,D*,FMP key required,,,COT chain; CFTC publishes the data free if revisited,995,1039,98,requests
+claude-trading-skills,crypto-regime-analyzer,CUT,,D*,"CoinGecko, Binance",,,Beta; per brief,1041,617,84,requests
+claude-trading-skills,data-quality-checker,CUT,,D,none,,,"Validates blog and markdown documents, not market data; the data layer gets its own checks",632,466,51,
+claude-trading-skills,dividend-growth-pullback-screener,CUT,,D*,"FMP required, FINVIZ",,,Per brief,1406,1272,182,requests
+claude-trading-skills,downtrend-duration-analyzer,CUT,,D*,FMP key required,,,Descriptive histograms only,773,824,74,numpy;pandas;requests
+claude-trading-skills,drawdown-circuit-breaker,MERGE,risk gate,D,none; reads the journal,"trader-risk, pre-trade-discipline-gate","n/a, runs inside replay","Daily loss, losing-streak cooldown, weekly and monthly limits; counts realized P&L only, so mark-to-market equity is added",992,1658,90,pandas_market_calendars;yaml
+claude-trading-skills,dual-axis-skill-reviewer,CUT,,L,none,,,Meta tooling,1050,836,33,yaml
+claude-trading-skills,earnings-calendar,KEEP,event calendar,D*,FMP key required (/stable endpoints),earnings-trade-analyzer,if the calendar is archived,Feeds the event-blackout rule; needs a second provider as fallback,1107,570,60,requests
+claude-trading-skills,earnings-trade-analyzer,CANDIDATE,PEAD sub-bot,D*,FMP key required,pead-screener,with paid point-in-time data,Five-factor post-earnings score; one earnings-event module with pead-screener,2107,2355,166,pandas_market_calendars;requests
+claude-trading-skills,economic-calendar-fetcher,KEEP,event calendar,D*,FMP key required,fxmacrodata-calendar,if the calendar is archived,Event blackout; FRED release dates added as a free fallback,592,462,122,requests
+claude-trading-skills,edge-candidate-agent,CUT,,D,FMP optional,,,Idea-generation pipeline,2277,2267,105,numpy;pandas;yaml
+claude-trading-skills,edge-concept-synthesizer,CUT,,D,none,,,Idea-generation pipeline,718,727,38,yaml
+claude-trading-skills,edge-hint-extractor,CUT,,L,none,,,Idea-generation pipeline with optional LLM ideation,458,284,29,yaml
+claude-trading-skills,edge-pipeline-orchestrator,CUT,,D,none,,,Idea-generation pipeline,588,1801,55,yaml
+claude-trading-skills,edge-signal-aggregator,CUT,,D,none,,,Aggregates cut skills,1396,1324,110,yaml
+claude-trading-skills,edge-strategy-designer,CUT,,D,none,,,Idea-generation pipeline,444,684,76,yaml
+claude-trading-skills,edge-strategy-reviewer,KEEP,research checklist,D,none,backtest-expert,n/a,Eight deterministic criteria and a bias checklist applied to a strategy spec; becomes the pre-registration lint,772,1038,57,yaml
+claude-trading-skills,exposure-coach,OPTIONAL,regime features,D,none; combines other outputs,stanley-druckenmiller-investment,yes,Hard-coded weights; enabled only if it improves out-of-sample results,772,804,138,
+claude-trading-skills,finviz-screener,CUT,,D,FINVIZ,,,Builds FinViz URLs and opens a browser,291,425,89,
+claude-trading-skills,ftd-detector,OPTIONAL,regime features,D*,FMP key required (index OHLCV),ibd-distribution-day-monitor,yes,"Not in your lists: state machine on index OHLCV, cheap to test on any EOD source",1689,1549,88,requests
+claude-trading-skills,futures-position-sizer,MERGE,position sizing,D,contract-spec table in code,position-sizer,n/a,Not in your lists: contract multiplier and tick table; needed for futures and index CFDs,1277,1706,212,
+claude-trading-skills,fxmacrodata-calendar,CUT,,D*,FXMacroData key,economic-calendar-fetcher,,Beta; small vendor; can return as a provider behind the calendar interface,232,580,115,
+claude-trading-skills,ibd-distribution-day-monitor,OPTIONAL,regime features,D*,FMP key required (QQQ/SPY OHLCV),ftd-detector,yes,Not in your lists: deterministic rule on index OHLCV,1495,1750,181,requests;yaml
+claude-trading-skills,institutional-flow-tracker,CUT,,D*,FMP key required,edgar13f.py,,Same 13F data through a paid aggregator; edgar13f reads the primary source,1449,979,83,requests
+claude-trading-skills,kanchi-dividend-review-monitor,CUT,,D,FMP,,,Per brief,440,249,20,
+claude-trading-skills,kanchi-dividend-sop,CUT,,L,"FMP, web search",,,Per brief,1985,1130,95,requests
+claude-trading-skills,kanchi-dividend-us-tax-accounting,CUT,,D,none,trader-tax,,Per brief,163,243,42,
+claude-trading-skills,macro-regime-detector,OPTIONAL,regime features,D*,yfinance required; FMP optional,exposure-coach,yes,Cross-asset ratios from ETF closes; rerouted through the data layer,2600,1741,114,requests;yfinance
+claude-trading-skills,manifoldbt-backtester,CUT,,D,external Rust engine,,,Beta; per brief,629,558,58,manifoldbt;pandas
+claude-trading-skills,market-breadth-analyzer,OPTIONAL,regime features,D*,author CSV on GitHub Pages (MIT repo),uptrend-analyzer,if CSV history is archived,Own breadth computation added as fallback,1964,1601,189,requests
+claude-trading-skills,market-environment-analysis,CUT,,L,web search,,no,Narrative,426,270,48,pandas_market_calendars
+claude-trading-skills,market-news-analyst,CUT,,L,web search,trader-news,no,Narrative; no code,0,36,3,
+claude-trading-skills,market-top-detector,CUT,,L,"FMP, author CSV, web-searched inputs","ftd-detector, ibd-distribution-day-monitor",no,Composite of other regime inputs plus web-searched values,3606,2455,229,pandas_market_calendars;requests;yfinance
+claude-trading-skills,mt5-robot-tester,CUT,,D,local MT5,,,Beta; per brief,2410,1498,103,
+claude-trading-skills,news-reaction-failure-analyzer,CUT,,L,"FMP, web search",,no,Needs LLM-curated news judgement,1396,1725,202,requests
+claude-trading-skills,options-strategy-advisor,KEEP,options math (black_scholes.py),D,none for pricing,,n/a,Pricer and Greeks match an independent implementation to 1e-14; prerequisite for deep hedging,421,242,41,numpy;requests;scipy
+claude-trading-skills,pair-trade-screener,CANDIDATE,pairs sub-bot,D*,FMP key required,,yes,"Fix before use: ADF p-values on estimated residuals, no multiple-testing control, full-sample hedge ratio, silent exceptions",1323,1685,226,numpy;pandas;requests;scipy;statsmodels
+claude-trading-skills,parabolic-short-trade-planner,CUT,,D*,"FMP, Alpaca",,,Per brief,4284,3274,294,pandas_market_calendars;requests
+claude-trading-skills,pead-screener,CANDIDATE,PEAD sub-bot,D*,FMP key required,earnings-trade-analyzer,with paid point-in-time data,Converted only if a point-in-time backtest passes,1957,1860,118,requests
+claude-trading-skills,portfolio-manager,CUT,,L,"Alpaca MCP, web search",trader-rebalance,no,Per brief,761,814,204,requests
+claude-trading-skills,position-sizer,MERGE,position sizing,D,none,"trader-budget, futures-position-sizer",n/a,"Fixed-fractional, ATR and Kelly; Kelly is a point estimate with no uncertainty haircut and only optional caps, so it is rewritten",496,865,154,
+claude-trading-skills,pre-trade-discipline-gate,MERGE,risk gate,D,none,"trader-risk, drawdown-circuit-breaker","n/a, runs inside replay","Blocks planless, oversized, revenge and regime-blocked entries",624,714,59,yaml
+claude-trading-skills,residual-edge-analyzer,KEEP,attribution (method),D,none,,n/a,"OLS, Newey-West and rolling stability written as pure-Python linear algebra; re-implemented on statsmodels; beta",1145,378,26,
+claude-trading-skills,scenario-analyzer,CUT,,L,web search,,no,Narrative; no code,0,35,3,
+claude-trading-skills,sector-analyst,CUT,,L,"chart images, author CSV",uptrend-analyzer,no,Reads chart images,572,466,47,
+claude-trading-skills,signal-postmortem,MERGE,journal and outcome store,D*,FMP optional (prices),trader-memory-core,n/a,Outcome labelling of past signals; becomes the D+1 labeller of the feedback loop,763,724,40,requests
+claude-trading-skills,skill-designer,CUT,,L,none,,,Meta tooling,102,147,15,
+claude-trading-skills,skill-idea-miner,CUT,,L,none,,,Meta tooling,1027,1148,71,yaml
+claude-trading-skills,skill-integration-tester,CUT,,D,none,,,Meta tooling,544,245,29,
+claude-trading-skills,stanley-druckenmiller-investment,CUT,,D,outputs of 8 other skills,exposure-coach,no,Narrative synthesis of cut skills,1256,1352,82,
+claude-trading-skills,stockbee-20pct-study,CUT,,D*,FMP key required,,,Beta; per brief,2009,927,53,requests
+claude-trading-skills,stockbee-episodic-pivot-analyzer,CUT,,D*,"catalyst file, FMP",,,Beta; per brief,1449,914,108,requests
+claude-trading-skills,stockbee-exhaustion-hammer-screener,CUT,,D*,FMP key required,,,Beta; per brief,1526,1115,81,requests
+claude-trading-skills,stockbee-momentum-burst-screener,CUT,,D*,FMP key required,,,Beta; per brief,1663,1547,168,pandas_market_calendars;requests
+claude-trading-skills,stockbee-setup-fluency-trainer,CUT,,D*,FMP optional,,,Beta; per brief,1248,1163,115,requests
+claude-trading-skills,strategy-pivot-designer,CUT,,D,none,,,"Not in your lists: generates new variants when backtests stall, which invites overfitting",1187,1239,76,yaml
+claude-trading-skills,technical-analyst,CUT,,L,chart images,,no,Reads chart images,1195,1587,148,requests
+claude-trading-skills,theme-detector,CUT,,D*,"FINVIZ Elite, FMP, yfinance, curl_cffi",,needs point-in-time data,Cut pending backtest,5645,5858,533,curl_cffi;finvizfinance;numpy;pandas;pandas_market_calendars;requests;yaml;yfinance
+claude-trading-skills,trade-hypothesis-ideator,CUT,,L,none,,no,Not in your lists: LLM ideation,1021,627,78,yaml
+claude-trading-skills,trade-performance-coach,CUT,,L,none,weekly-performance-digest,no,"Not in your lists: beta, LLM coaching",731,222,80,yaml
+claude-trading-skills,trader-memory-core,MERGE,journal and outcome store,D,local files; FMP optional,signal-postmortem,n/a,Thesis lifecycle state machine and JSON schema; storage moves to the append-only event log,3988,5484,515,jsonschema;yaml
+claude-trading-skills,trading-skills-navigator,CUT,,D,none,,,Meta tooling,2040,1484,201,yaml
+claude-trading-skills,uptrend-analyzer,OPTIONAL,regime features,D*,author CSV (repo has no LICENSE file),market-breadth-analyzer,if CSV history is archived,Data licence unclear; own computation as fallback,2246,2088,254,requests
+claude-trading-skills,us-market-bubble-detector,CUT,,L,web-searched inputs,,no,Narrative,324,240,21,
+claude-trading-skills,us-stock-analysis,CUT,,L,web search,trader-analyst,no,Narrative; no code,0,36,3,
+claude-trading-skills,us-undervalued-growth-screener,CUT,,D*,"FMP, SEC, company IR",,,"Beta; 14,635 lines; per brief",14635,7933,365,requests
+claude-trading-skills,value-dividend-screener,CUT,,D*,"FMP required, FINVIZ",,,Per brief,1428,1337,147,requests
+claude-trading-skills,vcp-screener,CUT,,D*,FMP key required,,needs survivorship-free universe,Cut pending backtest,3744,3450,262,requests
+claude-trading-skills,weekly-performance-digest,KEEP,journal reports,D,none,trade-performance-coach,n/a,"Win rate, expectancy, profit factor, R-multiple, MAE/MFE from the journal; confidence intervals added",513,340,31,yaml

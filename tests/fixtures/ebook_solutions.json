@@ -1,0 +1,576 @@
+{
+ "source": "Quantitative Finance From Scratch (QuantFinanceToGo), solutions pp. 23-25 and figure captions",
+ "note": "computed = re-derived here from the book's public formulas; printed = value in the book",
+ "rows": [
+  {
+   "id": "1.1a",
+   "chapter": 1,
+   "quantity": "simple return 80->60",
+   "computed": -0.25,
+   "printed": -0.25,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "1.1b",
+   "chapter": 1,
+   "quantity": "return needed 60->80",
+   "computed": 0.33333333333333326,
+   "printed": 0.333,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "1.2a",
+   "chapter": 1,
+   "quantity": "total return +10% then -10%",
+   "computed": -0.009999999999999898,
+   "printed": -0.01,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "1.2b",
+   "chapter": 1,
+   "quantity": "sum of log returns",
+   "computed": -0.010050335853501347,
+   "printed": -0.0101,
+   "tol": 5e-05,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "2.1",
+   "chapter": 2,
+   "quantity": "FV 1000 at 4% for 3y",
+   "computed": 1124.864,
+   "printed": 1124.86,
+   "tol": 0.005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "2.2a",
+   "chapter": 2,
+   "quantity": "PV of 500 in 2y at 5%",
+   "computed": 453.51473922902494,
+   "printed": 453.51,
+   "tol": 0.005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "2.2b",
+   "chapter": 2,
+   "quantity": "PV of 500 in 2y at 8%",
+   "computed": 428.6694101508916,
+   "printed": 428.67,
+   "tol": 0.005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "2.fig",
+   "chapter": 2,
+   "quantity": "100 at 5% for 10y (figure caption)",
+   "computed": 162.8894626777442,
+   "printed": 162.89,
+   "tol": 0.005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "3.1",
+   "chapter": 3,
+   "quantity": "EV of fair die",
+   "computed": 3.5,
+   "printed": 3.5,
+   "tol": 1e-12,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "3.2a",
+   "chapter": 3,
+   "quantity": "EV single number at 35:1",
+   "computed": -0.027027027027026973,
+   "printed": -0.027,
+   "tol": 0.0005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "3.2b",
+   "chapter": 3,
+   "quantity": "EV $1 on red",
+   "computed": -0.027027027027026973,
+   "printed": -0.027,
+   "tol": 0.0005,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "4.1a",
+   "chapter": 4,
+   "quantity": "P(price=100 after 4 fair steps)",
+   "computed": 0.375,
+   "printed": 0.375,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "4.1b",
+   "chapter": 4,
+   "quantity": "number of distinct end prices",
+   "computed": 5,
+   "printed": 5,
+   "tol": 0,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "4.2",
+   "chapter": 4,
+   "quantity": "arcsine-law share >90% one side",
+   "computed": 0.4096655293982669,
+   "printed": 0.41,
+   "tol": 0.005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "5.1a",
+   "chapter": 5,
+   "quantity": "annual sd from 1% daily, 252d",
+   "computed": 0.15874507866387544,
+   "printed": 0.159,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "5.1b",
+   "chapter": 5,
+   "quantity": "4-day sd from 1% daily",
+   "computed": 0.02,
+   "printed": 0.02,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "6.1",
+   "chapter": 6,
+   "quantity": "P(R < -24%) for N(8%,16%)",
+   "computed": 0.02275013194817921,
+   "printed": 0.0228,
+   "tol": 5e-05,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "6.1b",
+   "chapter": 6,
+   "quantity": "one year in N",
+   "computed": 43.95578901598566,
+   "printed": 44,
+   "tol": 0.5,
+   "unit": "years",
+   "reproduces": true
+  },
+  {
+   "id": "7.1a",
+   "chapter": 7,
+   "quantity": "mean of 5 daily log returns (%)",
+   "computed": 0.0,
+   "printed": 0.0,
+   "tol": 1e-12,
+   "unit": "%",
+   "reproduces": true
+  },
+  {
+   "id": "7.1b",
+   "chapter": 7,
+   "quantity": "daily vol dividing by N (%)",
+   "computed": 1.8973665961010275,
+   "printed": 1.9,
+   "tol": 0.005,
+   "unit": "%",
+   "reproduces": true
+  },
+  {
+   "id": "8.1a",
+   "chapter": 8,
+   "quantity": "Sharpe fund A",
+   "computed": 0.4,
+   "printed": 0.4,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "8.1b",
+   "chapter": 8,
+   "quantity": "Sharpe fund B",
+   "computed": 0.5,
+   "printed": 0.5,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "8.2a",
+   "chapter": 8,
+   "quantity": "mix return w=0.5",
+   "computed": 0.06,
+   "printed": 0.06,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "8.2b",
+   "chapter": 8,
+   "quantity": "mix vol w=0.5",
+   "computed": 0.075,
+   "printed": 0.075,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "8.2c",
+   "chapter": 8,
+   "quantity": "mix Sharpe w=0.5",
+   "computed": 0.4,
+   "printed": 0.4,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "8.3",
+   "chapter": 8,
+   "quantity": "annualised Sharpe from daily 0.1 (iid)",
+   "computed": 1.5874507866387546,
+   "printed": 1.59,
+   "tol": 0.005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "9.1a",
+   "chapter": 9,
+   "quantity": "+50% then -50%",
+   "computed": -0.25,
+   "printed": -0.25,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "9.1b",
+   "chapter": 9,
+   "quantity": "+20% then -20%",
+   "computed": -0.040000000000000036,
+   "printed": -0.04,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "9.2a",
+   "chapter": 9,
+   "quantity": "g = mu - sigma^2/2, sigma=20%",
+   "computed": 0.08,
+   "printed": 0.08,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "9.2b",
+   "chapter": 9,
+   "quantity": "g = mu - sigma^2/2, sigma=40%",
+   "computed": 0.01999999999999999,
+   "printed": 0.02,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "10.1",
+   "chapter": 10,
+   "quantity": "rho from cov 0.02, vols 20%",
+   "computed": 0.4999999999999999,
+   "printed": 0.5,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "10.2",
+   "chapter": 10,
+   "quantity": "Cov(X, X^2) for X uniform on {-1,0,1}",
+   "computed": 0.0,
+   "printed": 0.0,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.1",
+   "chapter": 11,
+   "quantity": "4 independent assets, 20% vol",
+   "computed": 0.1,
+   "printed": 0.1,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.2a",
+   "chapter": 11,
+   "quantity": "4 assets, rho=0.25",
+   "computed": 0.13228756555322954,
+   "printed": 0.132,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.2b",
+   "chapter": 11,
+   "quantity": "limit N->inf, rho=0.25",
+   "computed": 0.1,
+   "printed": 0.1,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.figa",
+   "chapter": 11,
+   "quantity": "10 assets, rho=0.3 (figure)",
+   "computed": 0.12165525060596438,
+   "printed": 0.122,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.figb",
+   "chapter": 11,
+   "quantity": "100 assets, rho=0.3 (figure)",
+   "computed": 0.11081516141756054,
+   "printed": 0.111,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "11.figc",
+   "chapter": 11,
+   "quantity": "floor, rho=0.3 (figure)",
+   "computed": 0.10954451150103323,
+   "printed": 0.11,
+   "tol": 0.0005,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "12.1a",
+   "chapter": 12,
+   "quantity": "min-variance weight w1",
+   "computed": 0.75,
+   "printed": 0.75,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "12.1b",
+   "chapter": 12,
+   "quantity": "resulting portfolio vol",
+   "computed": 0.0,
+   "printed": 0.0,
+   "tol": 1e-09,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "13.1a",
+   "chapter": 13,
+   "quantity": "beta = rho*si/sm",
+   "computed": 1.2,
+   "printed": 1.2,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "13.1b",
+   "chapter": 13,
+   "quantity": "expected move for market -4%",
+   "computed": -0.048,
+   "printed": -0.048,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "13.2",
+   "chapter": 13,
+   "quantity": "CAPM expected return",
+   "computed": 0.09999999999999999,
+   "printed": 0.1,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.1",
+   "chapter": 14,
+   "quantity": "Kelly p=0.6, b=1",
+   "computed": 0.19999999999999996,
+   "printed": 0.2,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.2a",
+   "chapter": 14,
+   "quantity": "Kelly p=0.4, b=2",
+   "computed": 0.10000000000000003,
+   "printed": 0.1,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.2b",
+   "chapter": 14,
+   "quantity": "log growth at full Kelly",
+   "computed": 0.00971231332288608,
+   "printed": 0.0097,
+   "tol": 5e-05,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.2c",
+   "chapter": 14,
+   "quantity": "log growth at half Kelly",
+   "computed": 0.007348095289199635,
+   "printed": 0.0073,
+   "tol": 5e-05,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.2d",
+   "chapter": 14,
+   "quantity": "half-Kelly growth / full-Kelly growth",
+   "computed": 0.7565751891348682,
+   "printed": 0.75,
+   "tol": 0.01,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "14.fig",
+   "chapter": 14,
+   "quantity": "Kelly p=0.55, b=1 (figure)",
+   "computed": 0.10000000000000009,
+   "printed": 0.1,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "15.1",
+   "chapter": 15,
+   "quantity": "paths for SE 0.4 -> 0.1",
+   "computed": 160000.0,
+   "printed": 160000,
+   "tol": 1e-06,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "15.fig",
+   "chapter": 15,
+   "quantity": "growth rate of 8% mean, 20% vol (figure)",
+   "computed": 0.06,
+   "printed": 0.06,
+   "tol": 1e-12,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "16.1a",
+   "chapter": 16,
+   "quantity": "P(Z < -5)",
+   "computed": 2.866515718791946e-07,
+   "printed": 2.87e-07,
+   "tol": 5e-10,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "16.1b",
+   "chapter": 16,
+   "quantity": "years between 5-sigma drops",
+   "computed": 13843.475346182071,
+   "printed": 13800,
+   "tol": 60,
+   "unit": "years",
+   "reproduces": true
+  },
+  {
+   "id": "17.1",
+   "chapter": 17,
+   "quantity": "1-day 99% parametric VaR",
+   "computed": 23263.47874040841,
+   "printed": 23263,
+   "tol": 0.5,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "17.2",
+   "chapter": 17,
+   "quantity": "1-day 99% parametric ES",
+   "computed": 26652.14220345806,
+   "printed": 26652,
+   "tol": 0.5,
+   "unit": "$",
+   "reproduces": true
+  },
+  {
+   "id": "17.z",
+   "chapter": 17,
+   "quantity": "z at 99%",
+   "computed": 2.3263478740408408,
+   "printed": 2.3263,
+   "tol": 5e-05,
+   "unit": "",
+   "reproduces": true
+  },
+  {
+   "id": "17.es_mult",
+   "chapter": 17,
+   "quantity": "ES in standard deviations",
+   "computed": 2.665214220345808,
+   "printed": 2.67,
+   "tol": 0.005,
+   "unit": "",
+   "reproduces": true
+  }
+ ]
+}

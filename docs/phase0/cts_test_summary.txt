@@ -1,0 +1,75 @@
+backtest-expert	88 passed in 0.26s
+breadth-chart-analyst	212 passed in 1.74s
+breakout-trade-planner	84 passed in 5.99s
+canslim-screener	429 passed in 3.88s
+contrarian-setup-gate	312 passed in 0.66s
+cot-contrarian-detector	98 passed in 2.73s
+crypto-regime-analyzer	84 passed in 0.31s
+data-quality-checker	51 passed in 0.42s
+dividend-growth-pullback-screener	182 passed in 0.43s
+downtrend-duration-analyzer	74 passed in 0.70s
+drawdown-circuit-breaker	90 passed in 6.42s
+dual-axis-skill-reviewer	33 passed in 0.38s
+earnings-calendar	60 passed in 0.31s
+earnings-trade-analyzer	166 passed in 66.39s (0:01:06)
+economic-calendar-fetcher	122 passed in 2.08s
+edge-candidate-agent	105 passed, 2 skipped in 0.64s
+edge-concept-synthesizer	38 passed in 0.18s
+edge-hint-extractor	29 passed in 0.10s
+edge-pipeline-orchestrator	55 passed in 0.38s
+edge-signal-aggregator	110 passed in 0.22s
+edge-strategy-designer	76 passed in 0.22s
+edge-strategy-reviewer	57 passed in 0.25s
+exposure-coach	138 passed in 0.36s
+finviz-screener	89 passed in 0.15s
+ftd-detector	88 passed in 0.36s
+futures-position-sizer	212 passed in 3.72s
+fxmacrodata-calendar	115 passed in 0.76s
+ibd-distribution-day-monitor	181 passed in 0.53s
+institutional-flow-tracker	83 passed in 0.25s
+kanchi-dividend-review-monitor	20 passed in 0.14s
+kanchi-dividend-sop	95 passed in 0.34s
+kanchi-dividend-us-tax-accounting	42 passed in 0.18s
+macro-regime-detector	114 passed in 1.83s
+manifoldbt-backtester	58 passed in 0.37s
+market-breadth-analyzer	189 passed in 0.48s
+market-environment-analysis	48 passed in 10.77s
+market-news-analyst	3 passed in 0.05s
+market-top-detector	229 passed in 6.24s
+mt5-robot-tester	103 passed in 1.49s
+news-reaction-failure-analyzer	202 passed in 4.20s
+options-strategy-advisor	41 passed in 0.78s
+pair-trade-screener	226 passed, 3 warnings in 3.92s
+parabolic-short-trade-planner	294 passed in 15.80s
+pead-screener	118 passed in 1.02s
+portfolio-manager	204 passed in 0.73s
+position-sizer	154 passed in 3.78s
+pre-trade-discipline-gate	59 passed in 0.34s
+residual-edge-analyzer	26 passed in 0.84s
+scenario-analyzer	3 passed in 0.04s
+sector-analyst	47 passed in 0.15s
+signal-postmortem	40 passed in 0.25s
+skill-designer	15 passed in 0.13s
+skill-idea-miner	71 passed in 0.44s
+skill-integration-tester	29 passed in 0.10s
+stanley-druckenmiller-investment	82 passed in 0.24s
+stockbee-20pct-study	53 passed in 0.29s
+stockbee-episodic-pivot-analyzer	108 passed in 0.32s
+stockbee-exhaustion-hammer-screener	81 passed in 0.55s
+stockbee-momentum-burst-screener	168 passed in 29.09s
+stockbee-setup-fluency-trainer	115 passed in 0.39s
+strategy-pivot-designer	76 passed in 0.43s
+technical-analyst	148 passed in 1.37s
+theme-detector	533 passed, 1 skipped in 16.78s
+trade-hypothesis-ideator	78 passed in 0.26s
+trade-performance-coach	80 passed in 0.24s
+trader-memory-core	515 passed in 15.69s
+trading-skills-navigator	201 passed in 2.11s
+uptrend-analyzer	254 passed in 0.62s
+us-market-bubble-detector	21 passed in 0.13s
+us-stock-analysis	3 passed in 0.05s
+us-undervalued-growth-screener	365 passed, 1 skipped, 13 subtests passed in 5.78s
+value-dividend-screener	147 passed in 0.40s
+vcp-screener	262 passed in 1.32s
+weekly-performance-digest	31 passed in 0.32s
+repo-scripts	1 failed, 3213 passed, 1 skipped, 1 warning in 168.87s (0:02:48)

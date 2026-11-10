@@ -1,0 +1,27 @@
+# main environment
+python 3.11.18, numpy 2.4.6, pandas 2.3.3
+[OK] statsmodels (ADF, Engle-Granger) 0.15.0: coint p (true pair)=0.0000, coint p (independent walks)=0.868, ADF p (random walk)=0.383
+[OK] arch (GARCH(1,1)) 8.0.0: true alpha=0.08 beta=0.90 -> fitted alpha=0.071 beta=0.914
+[OK] skfolio (min-variance, HRP) 1.12.8: min-risk weights sum=1.000 max=0.36; HRP weights sum=1.000 max=0.33
+[OK] PyPortfolioOpt (Ledoit-Wolf, min vol, HRP) 1.6.0: min-vol weights sum=1.000 max=0.36; HRP sum=1.000
+[OK] Riskfolio-Lib (HRP) 7.4.1: HRP weights sum=1.000 max=0.33
+[OK] py_vollib (Black-Scholes) 1.0.12: call=10.450584 (reference 10.450584), implied vol round-trip=0.200000
+[OK] QuantLib (analytic European) 1.44: call=10.450584 (reference 10.450584), delta=0.6368
+[OK] vectorbt (MA crossover with fees) 1.0.0: synthetic series: trades=11, total return=-28.070% (no meaning, synthetic)
+[OK] backtrader (SMA cross) 1.9.78.123: final value=9977.16 from 10000 (synthetic)
+[OK] bt (monthly equal weight) 1.4.1: total return=-13.012% (synthetic)
+[OK] hftbacktest (import) 2.4.2: import ok; API present: HashMapMarketDepthBacktest, BacktestAsset, ROIVectorMarketDepthBacktest
+[OK] NautilusTrader (import, engine construct) 1.221.0: BacktestEngine constructed and disposed
+[OK] exchange_calendars (XNYS) 4.13.2: 2026 sessions=251; Thanksgiving 2026-11-26 open=False; 2026-11-27 close=13:00
+[OK] DuckDB + Parquet round trip 2.0.0: rows=750, max ts=2025-11-14
+14/14 OK
+# separate environment for PFHedge (numpy < 2)
+purgedcv 0.1.12: PurgedKFold folds (train, test) = [(395, 100), (391, 100), (391, 100), (391, 100), (396, 100)]; train labels overlapping a test span = 4
+  CombinatorialPurgedCV(6 groups, 2 test): 15 splits (expected C(6,2) = 15)
+  per-bar Sharpe 0.0779: PSR(0) = 0.993; DSR with 1 trial = 0.993; DSR with 100 trials = 0.749 (must fall as trials rise)
+torch 2.15.0+cu132, pfhedge 0.23.0, cuda available: False
+  entropic-risk price, no hedge: 0.02328
+  entropic-risk price, Black-Scholes delta: 0.02280
+  entropic-risk price, Whalley-Wilmott: 0.02281
+  entropic-risk price, deep hedger, 40 epochs (under-trained on purpose): 0.02303
+  pfhedge ran in 7.4s on CPU

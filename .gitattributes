@@ -1,0 +1,8 @@
+# One line-ending convention on every platform.
+* text=auto eol=lf
+*.zip binary
+*.parquet binary
+*.duckdb binary
+*.png binary
+*.jpg binary
+*.jpeg binary
