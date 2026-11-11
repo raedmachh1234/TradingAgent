@@ -1,0 +1,5 @@
+fill_id,timestamp,instrument,side,quantity,price,currency,order_id,position_id,commission,financing,account_currency,fx_rate,order_type,stop_price,target_price,strategy,intent,notes
+F0001,2026-03-02T09:05:12+01:00,IX.D.DAX.IFD.IP,BUY,1,18012.4,EUR,O0001,P0001,0,0,EUR,1,MARKET,17920,18200,breakout,ENTRY,example row: an IG epic as the instrument
+F0002,2026-03-02T16:41:03+01:00,IX.D.DAX.IFD.IP,SELL,1,18096.9,EUR,O0002,P0001,0,0,EUR,1,LIMIT,,,breakout,EXIT,
+F0003,2026-03-03T14:30:45+00:00,AAPL,BUY,10,227.15,USD,O0003,P0002,1.00,0,EUR,0.9205,MARKET,221.50,,,ENTRY,"a note with a comma, kept as data"
+F0004,2026-03-05T15:02:11+00:00,AAPL,SELL,10,224.80,USD,O0004,P0002,1.00,0.42,EUR,0.9187,STOP,,,,EXIT,stopped out

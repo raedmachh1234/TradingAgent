@@ -1,6 +1,6 @@
 # THIRD_PARTY
 
-Status: Phase 0 audit, verified 2026-11-10. Nothing below has been copied into this project yet.
+Status: Phase 0 audit verified 2026-11-10; section 0 added in Phase 1.
 "Last commit" is the committer date of the default-branch HEAD, read with a blobless depth-1 clone
 (`tools/repo_meta.sh`); the raw output is in `docs/phase0/repo_meta_raw.tsv`.
 "Licence" is what the LICENSE file in the repository says, not what a README or badge claims.
@@ -11,6 +11,27 @@ Rules for this file
 - No code is copied from a source without a licence file (all rights reserved by default).
 - GPL, AGPL and Commons-Clause code is never imported into this codebase. Where such a tool is useful it runs as a separate process.
 - Model weights and datasets have their own licences; they are listed separately from code.
+
+## 0. Runtime dependencies of quantbot itself (Phase 1)
+
+Versions as installed and tested on 2026-11-10 (Python 3.11.18 and 3.13.18). Licences from package metadata.
+
+| Package | Version tested | Licence | Used for |
+| --- | --- | --- | --- |
+| numpy | 2.4.6 | BSD-3-Clause (bundled parts 0BSD, MIT, Zlib, CC0-1.0) | synthetic data, arrays |
+| pandas | 3.1.1 | BSD-3-Clause | data frames |
+| pyarrow | 26.0.1 | Apache-2.0 | Parquet files |
+| duckdb | 2.0.0 | MIT | catalog and queries over Parquet |
+| PyYAML | 6.0.3 | MIT | configuration, grants |
+| cryptography | 50.0.2 | Apache-2.0 OR BSD-3-Clause | Ed25519 operator signatures |
+| tzdata | 2026.6 | Apache-2.0 | time zones on Windows |
+| pytest (dev only) | 9.2.0 | MIT | tests |
+
+**Harvest status after Phase 1.** No code was copied from the base repositories. Phase 1 re-implements two designs
+from them, with credit: the risk verdict bound to one exact order by its fingerprint (trader-skill, `trader-risk`
+and `trader-broker`), and exits treated more leniently than entries so that getting out stays possible
+(day-trader-skill, `trader-risk`). The 59 cut skills are archived unchanged in `_archive/`, the 37 survivors in
+`third_party/sources/`, each with its upstream LICENSE.
 
 ## 1. Base repositories (harvested by copying, with attribution)
 

@@ -1,0 +1,47 @@
+quantbot demo: synthetic data, paper broker, packaged default settings, no network, no credentials
+working folder: data/demo
+
+[1] Data layer: cache, lineage, fallback, quality checks
+    DEMO.A: provider 'primary-demo' failed, fell back to 'synthetic': 260 bars 2025-01-01..2025-12-30; quality: 260 rows, no issues
+    DEMO.B: provider 'primary-demo' failed, fell back to 'synthetic': 260 bars 2025-01-01..2025-12-30; quality: 260 rows, no issues
+    second request: cache hit, nothing fetched
+    catalog records provider, retrieval time and terms for 2 datasets (terms: "generated locally from a seed; not market data; no licence restrictions")
+
+[2] M1 human-confirm replay (the project default): a scripted operator approves, rejects, edits or stays silent
+    operator: approved 19, rejected 5, edited 3, left unanswered 4 (expired after 96 h)
+    decisions 35; proposals: EXPIRED 4, FILLED 21, REJECTED 5, SUBMITTED 1
+    orders sent 22; fills 32; paper equity 9,944.53 EUR (shadow book with every decision filled: 10,126.16 EUR)
+    vetoes: 9 entries rejected or expired; they would have made +155.77 EUR, so the vetoes were worth -155.77 EUR (synthetic data: no meaning beyond the mechanics)
+    one proposal as the operator sees it:
+      PROPOSAL P-c1198cde9645f215  [M1]  state FILLED
+        BUY 24 DEMO.A  MARKET  (entry)
+        entry ~64.7399  stop 62.73  target 68.76
+        notional 1,553.76 EUR; worst-case loss 48.24 EUR = 0.48% of equity 10,000.00
+        expected value net of costs: n/a (no validated edge yet)
+        strategy ma_demo v0.1.0; confidence 0.83 (uncalibrated); regime normal
+        key features: atr=1.006, fast=65.13, ma_gap=0.02475, slow=63.55
+        risk gate: PASS
+        mode: default
+        expires 2025-02-15 21:00 UTC; fingerprint f34ccdd7a4e3f4f2
+
+[3] Same data in M0, M1, M2 and M3 (sandbox with a throwaway key and grant; the project stays at M1)
+    mode  decisions  decision hash     proposals->orders  fills
+    M0    35         facb4622b18f0b3e    26 -> 0          0     (proposals ran as M0)
+    M1    35         facb4622b18f0b3e    35 -> 35         50    (proposals ran as M1)
+    M2    35         facb4622b18f0b3e    35 -> 35         50    (proposals ran as M2)
+    M3    35         facb4622b18f0b3e    35 -> 35         50    (proposals ran as M3)
+    identical decisions in every mode: YES
+
+[4] Safety checks
+    PASS  forged approval (wrong key) is refused
+    PASS  approval text arriving as data is refused
+    PASS  the same approval delivered twice sends one order
+    PASS  policy file asks for M3 with no signed grant: capped at M1
+    PASS  approved order after a price move: cancelled and re-proposed
+    PASS  kill switch engaged: approved entry is not sent, trading halts
+    PASS  proposal past its expiry cannot be approved
+
+[5] Audit log: 310 records, chain intact: verified (data/demo/sandbox/events_m1.jsonl)
+
+demo result: all checks passed
+Nothing above is evidence that any strategy is profitable: the data is random and the strategy is a toy.

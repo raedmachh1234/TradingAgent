@@ -1,0 +1,121 @@
+# quantbot defaults. Every value is a default, not a recommendation, and none is hard-coded elsewhere.
+# Override any of them in config/quantbot.yaml (same structure). Unknown keys are rejected at load.
+# Capital, markets, hardware, budget and trade history are still open owner inputs: they are parameters here.
+
+account:
+  currency: EUR             # account currency code; used for display only
+  paper_capital: 10000      # starting capital of the paper account, in account currency
+  day_timezone: UTC         # the trading day for daily loss limits rolls at midnight in this zone
+
+markets:
+  bar_frequency: 1d         # 1d or an intraday pandas offset such as 5min
+  instruments:              # not final; the demo trades two synthetic instruments
+    - {symbol: DEMO.A, asset_class: synthetic, currency: EUR, multiplier: 1.0, qty_step: 1.0, min_qty: 1.0, tick_size: 0.01, margin_rate: 1.0}
+    - {symbol: DEMO.B, asset_class: synthetic, currency: EUR, multiplier: 1.0, qty_step: 1.0, min_qty: 1.0, tick_size: 0.01, margin_rate: 1.0}
+
+hardware:
+  device: cpu               # cpu | cuda | auto. Nothing in Phase 1 uses a GPU.
+
+budget:
+  data_monthly: 0           # account currency per month for paid data and APIs
+
+trade_history:
+  path: null                # CSV in the format described in docs/trade_history_format.md
+
+data:
+  root: data                # cache, event logs and state live here; the folder is ignored by git
+  dataset: demo
+  providers: [synthetic]    # tried in order; the next one is used when one fails
+  synthetic: {seed: 7, annual_drift: 0.05, annual_vol: 0.20, start_price: 100.0}
+  csv: {folder: data/csv}   # one <symbol>.csv per instrument: ts,open,high,low,close,volume
+  quality:
+    max_gap_factor: 3.0     # a gap is a step longer than this many median steps
+    outlier_mad: 12.0       # a bar-to-bar log return beyond this many robust sigmas is an outlier
+    outlier_min_abs: 0.08   # ...and it must also exceed this absolute log return
+
+costs:                      # paper broker cost model, applied to every simulated fill
+  spread_bps: 2.0           # full bid-ask spread; a fill pays half of it
+  slippage_bps: 1.0
+  commission_bps: 1.0
+  min_commission: 0.0
+  max_participation: null   # share of a bar's volume one order may take per bar; null = no cap
+
+risk:                       # always on, in every mode
+  require_stop_on_entry: true
+  allow_short: false
+  blocked_symbols: []
+  min_order_notional: 10
+  max_order_notional: 2500
+  max_risk_per_trade_pct: 1.0      # worst-case loss at the stop, percent of equity
+  max_position_pct: 25             # one instrument's notional, percent of equity
+  max_gross_exposure_pct: 100      # all positions plus pending proposals, percent of equity
+  max_open_positions: 5
+  daily_loss_limit_pct: 2.0
+  max_drawdown_pct: 10.0
+  max_orders_per_minute: 6
+  max_orders_per_day: 30
+  max_data_age_seconds: 345600     # 4 days: daily bars across a weekend
+  kill_switch_allows_exits: true   # getting out must stay possible
+  per_strategy:
+    max_capital_use_pct: 100       # of the capital allocated to that sub-bot
+    max_open_positions: 3
+
+execution:
+  kill_file: data/KILL             # creating this file by hand halts the bot, even across restarts
+  proposal_ttl_seconds: 345600     # a proposal awaiting a human expires after this long (4 days suits daily bars; use minutes intraday)
+  price_drift_tolerance_bps: 50    # an approved order is cancelled and re-proposed beyond this drift
+  max_reproposals: 1
+  verdict_max_age_seconds: 5       # the executor refuses a risk verdict older than this
+  reconcile_tolerance: 1.0e-9
+  edit_bounds:
+    quantity: decrease_only        # a human may reduce size, never raise it
+    stop: tighten_only             # a human may move the stop closer to the entry, never away
+    limit_price_bps: 50            # a limit price may move at most this far from the proposal's
+
+policy:
+  default_mode: M1                 # every new strategy starts in human-confirm
+  rules: []                        # each: {name, match: {...}, mode}; all matching rules apply, the strictest wins
+  auto:                            # every one of these must hold for M2, otherwise the decision goes to M1
+    auto_limit_notional: 500
+    confidence_threshold: 0.60
+    veto_window_seconds: 0         # announce, then execute after this many seconds unless vetoed
+    trading_hours: {timezone: UTC, weekdays: [0, 1, 2, 3, 4], windows: ["00:00-23:59"]}
+    event_blackouts: []            # [{start: ISO time, end: ISO time, label: text}]
+
+downgrade:                         # what each trigger does: M1 or HALT. Nothing here ever raises a mode.
+  daily_loss: HALT
+  drawdown: HALT
+  stale_data: M1
+  bad_data: M1
+  reconciliation: HALT
+  calibration: M1
+  broker_errors: M1
+  slippage: M1
+  kill_switch: HALT
+  thresholds:
+    broker_errors_count: 3
+    broker_errors_window_seconds: 600
+    slippage_bps: 25               # mean adverse slippage against the expected fill price
+    slippage_min_fills: 5
+    calibration_brier_excess: 0.05 # live Brier score minus the validation Brier score
+
+autonomy:
+  grants_file: config/autonomy.yaml       # signed by the operator; without a valid signature everything is capped at M1
+  operator_public_key: config/operator.pub
+  cooling_off_hours: {M2: 24, M3: 72}
+
+approval:
+  channels: [cli]                  # cli | telegram
+  telegram:
+    chat_id: null                  # where proposals are sent (your private chat with the bot)
+    allowed_user_ids: []           # only these Telegram users may approve; the bot token comes from TELEGRAM_BOT_TOKEN in .env
+    poll_timeout_seconds: 20
+
+strategies:                        # sub-bots; status is informational, autonomy comes only from signed grants
+  - id: ma_demo
+    class: ma_crossover
+    version: "0.1.0"
+    symbols: [DEMO.A, DEMO.B]
+    weight: 1.0
+    status: candidate
+    params: {fast: 10, slow: 30, atr_window: 14, stop_atr: 2.0, target_r: 2.0, risk_pct: 0.5}

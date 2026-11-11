@@ -172,7 +172,7 @@ def main() -> None:
         tp = passed.get(d[1], "") if d[0] == CTS else a["n_tests"]
         rows.append(dict(zip(cols, list(d) + [int(a["prod_loc"]), int(a["test_loc"]), tp, a["third_party"]])))
     with open(ROOT / "docs/phase0/skill_decisions.csv", "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
+        w = csv.DictWriter(f, fieldnames=cols, lineterminator="\n"); w.writeheader(); w.writerows(rows)
     for repo in (TS, CTS, DTS):
         agg = defaultdict(lambda: [0, 0, 0])
         for r in rows:

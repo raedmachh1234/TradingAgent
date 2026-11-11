@@ -1,50 +1,147 @@
 # quantbot
 
-Orchestrator for multiple trading sub-bots with one execution gate (observe, human-confirm,
-auto-with-limits, full-auto). **Status: Phase 0 complete (audit, research, plan). No trading code yet.**
+An orchestrator for trading sub-bots with one execution gate and four modes: observe (M0), human-confirm (M1),
+auto-with-limits (M2) and full-auto (M3).
 
-Nothing in this repository is financial advice, and nothing here has been shown to be profitable.
+**Status: Phase 1 complete.** Architecture, event bus, strategy registry, cached data layer and execution gate,
+running against a paper broker on synthetic data. There are no live credentials anywhere. Every strategy defaults
+to M1.
 
-## Phase 0: what is here
+Nothing in this repository is financial advice. No strategy here has been shown to be profitable; the two built-in
+sub-bots are plumbing aids, not trading ideas.
+
+## Quick start
+
+Requires Python 3.11 or newer. On Windows:
+
+```
+py -3.11 -m venv .venv
+.venv\Scripts\activate
+pip install -e ".[dev]"
+python -m quantbot demo
+python -m pytest
+```
+
+On Linux or macOS, use `python3 -m venv .venv` and `source .venv/bin/activate` instead.
+
+| Command | What it does |
+| --- | --- |
+| `python -m quantbot demo` | One-command demo, offline, about 2 seconds; prints its checks and exits 0 if all pass |
+| `python -m pytest` | 237 tests, about 6 seconds |
+| `python -m quantbot paper` | Interactive paper session: each proposal is shown and you approve, reject or edit it |
+| `python -m quantbot history check FILE` | Checks your trade-history CSV against [the import format](docs/trade_history_format.md) |
+| `python -m quantbot log verify FILE` | Verifies an audit log's hash chain |
+| `python -m quantbot keys init` | Creates your operator key pair; the private key is stored outside the project |
+| `python -m quantbot autonomy sign` | Signs `config/autonomy.yaml`, the only way to allow a strategy above M1 |
+| `python -m quantbot config` | Prints the effective configuration |
+
+## How it fits together
+
+```
+providers (synthetic, CSV; failover in order) -> DataService -> cache: Parquet files + DuckDB catalog
+                                                                 (provider, retrieval time, terms per dataset)
+replay or live feed -> Orchestrator -> sub-bots: read-only context in, Decision out
+                                     -> ExecutionGate
+                                          risk gate      always on; signs a verdict bound to one exact order
+                                          PolicyEngine   strictest rule wins; signed grants cap; downgrades lower
+                                          ApprovalService
+                                             M0 observe | M1 human (CLI, Telegram) | M2 auto with limits | M3 auto
+                                             expiry, bounded edits, revalidation, re-proposal
+                                     -> Executor: the only holder of a broker adapter -> PaperBroker
+                                     -> books: actual (broker fills) and shadow (every decision filled)
+monitors (kill switch, loss, drawdown, data, reconciliation, errors, slippage, calibration) -> M1 or halt
+event bus: every event audited, then delivered to observers -> append-only, hash-chained audit log
+```
+
+Two design points carry most of the safety:
+
+- **Decisions do not depend on the mode.** Sub-bots read their positions from the shadow book, which fills every
+  decision whatever happens to it afterwards. Replaying the same data in M0, M1, M2 and M3 gives identical
+  decisions; only what happens after the gate differs. The shadow book also gives the counterfactual outcome of
+  every vetoed or expired proposal.
+- **The event bus cannot trade.** Decisions reach the gate and fills reach the books by direct calls inside the
+  orchestrator. The bus audits events and informs observers, so a component that can publish an event, such as a
+  future news reader, cannot create an order.
+
+## Guarantees and the tests that check them
+
+| Guarantee | Tests |
+| --- | --- |
+| Strategy code cannot import a broker, the gate or the network | `test_architecture.py` |
+| Nothing reaches the broker without a risk pass and revalidation | `test_state_machine.py`, `test_risk_gate.py` |
+| The executor refuses forged, stale or mismatched risk verdicts | `test_risk_gate.py` |
+| The bot cannot raise its own mode: no grant means M1; grants are Ed25519-signed by you, cool off and expire; lifting a downgrade needs a signed command | `test_policy.py`, `test_downgrades.py`, `test_config.py` |
+| Untrusted text cannot approve: only authenticated channels count; Telegram text messages are ignored | `test_untrusted_text.py` |
+| Proposals expire; approved orders are revalidated for price drift, data and risk, then cancelled and re-proposed if needed | `test_approval.py` |
+| Edits are bounded: size down only, stop closer only, exits by size only | `test_approval.py` |
+| Every downgrade trigger lowers the mode (M1 or halt) and only a signed command lifts it | `test_downgrades.py` |
+| No duplicate orders: idempotent client order ids at the executor and the broker | `test_duplicates.py` |
+| Identical decisions in every mode on replay | `test_replay_modes.py`, the demo |
+| Kill switch, max order rate, max position, daily loss limit and reconciliation are on in every mode | `test_risk_gate.py`, `test_downgrades.py` |
+| The audit log is append-only and tamper-evident | `test_core.py` |
+| No secrets in the repository | `test_no_secrets.py` |
+
+## Configuration
+
+Defaults are in [src/quantbot/default_config.yaml](src/quantbot/default_config.yaml). Override them in
+`config/quantbot.yaml` (start from [config/quantbot.example.yaml](config/quantbot.example.yaml)); a misspelt key is
+an error, not a silent default. Still-open owner inputs are parameters: account currency and paper capital
+(10,000), instruments and bar frequency, hardware, data budget, trade-history path.
+
+Secrets go in `.env` (see [.env.example](.env.example)), which git ignores. Phase 1 needs none.
+
+## Allowing a strategy above M1
+
+Only you can, and only with your private key:
+
+1. `python -m quantbot keys init` creates the key pair. The private key goes to `%USERPROFILE%\.quantbot\`, outside
+   this folder.
+2. Add a grant to `config/autonomy.yaml`, for example `{strategy: ma_demo, max_mode: M2}`.
+3. `python -m quantbot autonomy sign`. The grant takes effect after its cooling-off period: 24 hours for M2 and
+   72 hours for M3, counted from when the bot first sees it.
+
+Releasing the kill switch and clearing a downgrade also require a command signed with that key. Halting needs no
+key: create the file `data/KILL`.
+
+## Layout
 
 | Path | What it is |
 | --- | --- |
-| `THIRD_PARTY.md` | Base repositories, their dependencies, candidate libraries, models: licence and last commit as verified on 2026-11-10 |
-| `docs/phase0/skill_audit_raw.csv` | Static audit of all 96 skills: lines of code, tests, third-party imports, hosts, environment keys |
-| `docs/phase0/skill_decisions.csv` | Keep / merge / candidate / optional / cut for every skill, with target module and reason |
-| `docs/phase0/cts_test_summary.txt` | pytest result per test group of claude-trading-skills (74 skill groups pass; 1 environment-specific failure in repo tooling) |
-| `docs/phase0/cts_venv_licenses.json` | Licence metadata of the packages installed by the claude-trading-skills lockfile |
-| `docs/phase0/repo_meta_raw.tsv` | HEAD commit date and licence header for 52 repositories |
-| `docs/phase0/smoke_results.txt` | Output of the library smoke tests |
-| `tests/fixtures/ebook_solutions.json` | 57 values from "Quantitative Finance From Scratch", re-computed and compared with the book |
-| `tools/` | The scripts that produced all of the above |
+| `src/quantbot/core/` | types, clock, config, event bus, audit log |
+| `src/quantbot/data/` | providers, cache, quality checks, replay feed, trade-history validator |
+| `src/quantbot/strategy/`, `strategies/` | strategy interface, registry, two plumbing sub-bots |
+| `src/quantbot/risk/` | risk gate, kill switch, downgrade monitors |
+| `src/quantbot/execution/` | policy engine, signed grants, approval service, proposals, executor, channels |
+| `src/quantbot/brokers/` | adapter interface with declared modes, paper broker |
+| `src/quantbot/portfolio/` | actual and shadow books, capital allocator |
+| `config/` | example settings and the empty, unsigned autonomy file |
+| `docs/` | decisions log, broker criteria, trade-history format, ProOrder stop runbook, Phase 0 material |
+| `_archive/` | the 59 cut skills, unchanged, with the reason each was cut |
+| `third_party/` | pristine sources of the 37 surviving skills and their licences |
+| `tools/` | Phase 0 audit scripts |
 
-## One-command reproduction
+## What is still weak after Phase 1
 
-```bash
-bash tools/phase0_reproduce.sh /path/to/empty/work/dir
-```
+- Only synthetic and CSV data providers exist; no market-data vendor is connected.
+- The Telegram channel is tested against a fake Bot API only. It is not yet wired into a long-running service.
+- Strategies decide from the shadow book. When the real book diverges after a veto, edit or delay, the gate caps
+  exits to the real position and refuses duplicate entries, but a position orphaned that way relies on its
+  broker-side stop and target.
+- Python cannot isolate components inside one process. Strategy isolation is enforced by architecture tests and
+  by what the strategy context exposes, not by a sandbox.
+- Signed grants are re-read only at start-up.
+- The two built-in sub-bots have no edge; confidence values are uncalibrated.
 
-Clones the three base repositories at the audited commits, runs their test suites, and regenerates
-the audit, the decision table and the e-book fixtures. The claude-trading-skills matrix takes about
-10 minutes; `SKIP_CTS_TESTS=1` skips it.
+## Phase 0 material
 
-Library smoke tests (two environments, because PFHedge 0.23.0 requires numpy < 2):
+| Path | What it is |
+| --- | --- |
+| `THIRD_PARTY.md` | Dependencies, base repositories, candidate libraries and models: licence and last commit as verified |
+| `docs/phase0/` | Skill audit, keep/merge/cut decisions, test summaries, licence metadata, library smoke-test output |
+| `tests/fixtures/ebook_solutions.json` | 57 values from "Quantitative Finance From Scratch", re-computed and checked against the book |
 
-```bash
-uv venv --python 3.11 .venv-smoke && uv pip install --python .venv-smoke/bin/python \
-  skfolio pyportfolioopt riskfolio-lib arch statsmodels py_vollib QuantLib hftbacktest \
-  nautilus_trader vectorbt backtrader bt exchange_calendars duckdb pyarrow 'plotly<6'
-.venv-smoke/bin/python tools/smoke_libs.py
-
-uv venv --python 3.11 .venv-ml && uv pip install --python .venv-ml/bin/python torch pfhedge purgedcv pandas
-.venv-ml/bin/python tools/smoke_ml_libs.py
-```
-
-## What is still weak after Phase 0
-
-- Web search was not available, so the survey of existing bots starts from prior knowledge and may miss recent projects.
-- Library checks are smoke tests on synthetic data. No framework was tested on real market data or on the owner's trades.
-- Kronos, TimesFM, Chronos-2, Qlib and ABIDES were not run (no GPU here; deferred to the phases that use them).
-- Finnhub's terms, Massive's pricing, IG country eligibility and API access on a ProRealTime-sponsored IG account are unverified.
-- Lines of code and dependencies removed are projections from the cut list, not a finished conversion.
+`bash tools/phase0_reproduce.sh <empty dir>` reproduces the audit: it clones the three base repositories at the
+audited commits, runs their tests, and regenerates the audit, the decision table and the e-book fixtures. The
+claude-trading-skills matrix takes about 10 minutes; `SKIP_CTS_TESTS=1` skips it. The library smoke tests need
+two environments, because PFHedge 0.23.0 requires numpy below 2: see `tools/smoke_libs.py` and
+`tools/smoke_ml_libs.py`.

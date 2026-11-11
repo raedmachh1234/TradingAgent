@@ -1,0 +1,31 @@
+# Copy to config/quantbot.yaml (ignored by git) and change only what you need.
+# Every key must exist in src/quantbot/default_config.yaml; a typo is an error, not a silent default.
+# Open inputs from Phase 0 (capital, markets, hardware, budget, trade history) are all set here.
+
+account:
+  currency: EUR
+  paper_capital: 10000        # paper account size, in account currency
+
+# markets:
+#   bar_frequency: 1d
+#   instruments:
+#     - {symbol: DEMO.A, asset_class: synthetic, currency: EUR, multiplier: 1.0, qty_step: 1.0, min_qty: 1.0, tick_size: 0.01, margin_rate: 1.0}
+
+# hardware:
+#   device: cpu                # cpu | cuda | auto
+
+# budget:
+#   data_monthly: 0            # account currency per month for paid data and APIs
+
+# trade_history:
+#   path: data/my_trades.csv   # format: docs/trade_history_format.md
+
+# risk:
+#   daily_loss_limit_pct: 2.0
+#   max_drawdown_pct: 10.0
+
+# approval:
+#   channels: [cli, telegram]
+#   telegram:
+#     chat_id: 123456789       # your private chat with the bot
+#     allowed_user_ids: [123456789]

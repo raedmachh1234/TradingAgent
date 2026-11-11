@@ -1,0 +1,13 @@
+# Signed autonomy grants: the only way a strategy can run above M1 (human-confirm).
+#
+# This file ships with no grants, so every strategy is capped at M1. A grant is added by you, not by the bot:
+#   1. python -m quantbot keys init          (once; the private key stays outside this folder)
+#   2. add an entry under grants, for example
+#        - strategy: ma_demo
+#          max_mode: M2
+#          evidence: "link to the promotion report that met the M2 criteria"
+#   3. python -m quantbot autonomy sign      (writes the signature; any later edit invalidates it)
+# A grant takes effect after its cooling-off period (24 h for M2, 72 h for M3 by default), counted from
+# the moment the bot first sees it. A missing, unsigned or tampered file means no grants.
+version: 1
+grants: []

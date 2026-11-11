@@ -90,7 +90,7 @@ if __name__ == "__main__":
     ts, cts, dts, out = map(Path, sys.argv[1:5])
     rows = audit_flat(ts, "trader-skill") + audit_cts(cts) + audit_flat(dts, "day-trader-skill")
     with open(out, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()), lineterminator="\n")
         w.writeheader(); w.writerows(rows)
     for repo in ("trader-skill", "claude-trading-skills", "day-trader-skill"):
         rr = [r for r in rows if r["repo"] == repo]

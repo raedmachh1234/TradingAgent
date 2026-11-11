@@ -1,0 +1,241 @@
+# python -m pytest -v, Python 3.11.18, 2026-11-11T01:13Z
+tests/test_approval.py::test_unanswered_proposal_expires_and_is_never_sent PASSED
+tests/test_approval.py::test_an_approval_that_arrives_after_expiry_is_refused PASSED
+tests/test_approval.py::test_expiry_does_not_apply_before_the_ttl PASSED
+tests/test_approval.py::test_drift_beyond_tolerance_cancels_and_re_proposes_at_the_new_price PASSED
+tests/test_approval.py::test_drift_within_tolerance_is_submitted PASSED
+tests/test_approval.py::test_re_proposals_are_limited PASSED
+tests/test_approval.py::test_stale_data_at_revalidation_cancels PASSED
+tests/test_approval.py::test_edits_are_bounded[edits0-True-] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits1-False-size can go down, never up] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits2-False-below the minimum] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits3-False-off the step] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits4-True-] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits5-False-closer to the entry] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits6-False-closer to the entry] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits7-True-] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits8-False-profit side] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits9-False-not a limit order] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits10-False-unsupported fields] PASSED
+tests/test_approval.py::test_edits_are_bounded[edits11-False-nothing to change] PASSED
+tests/test_approval.py::test_an_edited_order_is_what_gets_filled PASSED
+tests/test_approval.py::test_only_the_size_of_an_exit_can_be_edited PASSED
+tests/test_approval.py::test_veto_window_executes_unless_vetoed PASSED
+tests/test_approval.py::test_a_veto_window_re_checks_the_m2_conditions_before_executing PASSED
+tests/test_approval.py::test_a_veto_inside_the_window_rejects PASSED
+tests/test_architecture.py::test_strategy_code_cannot_import_brokers_the_gate_or_the_network PASSED
+tests/test_architecture.py::test_strategies_see_only_a_read_only_context PASSED
+tests/test_architecture.py::test_only_the_executor_holds_a_broker_and_does_not_expose_it PASSED
+tests/test_architecture.py::test_the_running_bot_never_loads_a_private_key PASSED
+tests/test_architecture.py::test_only_the_telegram_channel_uses_the_network PASSED
+tests/test_architecture.py::test_only_the_approval_layer_and_wiring_import_the_approval_service PASSED
+tests/test_config.py::test_open_inputs_are_parameters_with_defaults PASSED
+tests/test_config.py::test_user_file_overrides_and_unknown_keys_are_rejected PASSED
+tests/test_config.py::test_default_mode_cannot_be_autonomous[M2] PASSED
+tests/test_config.py::test_default_mode_cannot_be_autonomous[M3] PASSED
+tests/test_config.py::test_invalid_settings_are_rejected[override0-M1 or HALT] PASSED
+tests/test_config.py::test_invalid_settings_are_rejected[override1-positive] PASSED
+tests/test_config.py::test_invalid_settings_are_rejected[override2-positive] PASSED
+tests/test_config.py::test_invalid_settings_are_rejected[override3-unknown instruments] PASSED
+tests/test_config.py::test_invalid_settings_are_rejected[override4-unique] PASSED
+tests/test_config.py::test_lists_are_replaced_not_merged PASSED
+tests/test_core.py::test_sim_clock_never_moves_backwards PASSED
+tests/test_core.py::test_mode_order_and_parsing PASSED
+tests/test_core.py::test_digest_is_stable_and_order_independent PASSED
+tests/test_core.py::test_event_log_chain_verifies_and_survives_reload PASSED
+tests/test_core.py::test_event_log_detects_tampering[edit] PASSED
+tests/test_core.py::test_event_log_detects_tampering[delete] PASSED
+tests/test_core.py::test_event_log_detects_tampering[reorder] PASSED
+tests/test_core.py::test_event_log_detects_tampering[truncate_hash] PASSED
+tests/test_core.py::test_event_log_has_no_update_or_delete_api PASSED
+tests/test_core.py::test_bus_is_queued_ordered_and_audits_before_dispatch PASSED
+tests/test_data_layer.py::test_fallback_to_next_provider_is_recorded PASSED
+tests/test_data_layer.py::test_bad_data_from_a_provider_is_rejected_and_the_next_one_used PASSED
+tests/test_data_layer.py::test_all_providers_failing_raises PASSED
+tests/test_data_layer.py::test_every_row_records_provider_and_retrieval_time_and_the_catalog_records_terms PASSED
+tests/test_data_layer.py::test_cache_hit_and_incremental_append PASSED
+tests/test_data_layer.py::test_redelivered_bars_never_rewrite_history PASSED
+tests/test_data_layer.py::test_point_in_time_view_of_the_cache PASSED
+tests/test_data_layer.py::test_synthetic_provider_is_deterministic_and_window_independent PASSED
+tests/test_data_layer.py::test_csv_provider PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-nan_price-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-non_positive_price-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-negative_volume-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-ohlc_inconsistent-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-duplicate_ts-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-non_monotonic_ts-fatal] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-gap-warn] PASSED
+tests/test_data_layer.py::test_quality_checks[<lambda>-zero_volume-warn] PASSED
+tests/test_data_layer.py::test_quality_flags_an_outlier_return PASSED
+tests/test_data_layer.py::test_staleness PASSED
+tests/test_data_layer.py::test_replay_is_in_time_order_and_history_has_no_future PASSED
+tests/test_demo.py::test_demo PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[daily_loss] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[drawdown] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[stale_data] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[bad_data] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[reconciliation] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[broker_errors] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[slippage] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[calibration] PASSED
+tests/test_downgrades.py::test_each_trigger_downgrades_and_never_raises[kill_switch] PASSED
+tests/test_downgrades.py::test_quiet_conditions_fire_nothing PASSED
+tests/test_downgrades.py::test_downgrades_are_lifted_only_by_a_signed_operator_command PASSED
+tests/test_downgrades.py::test_a_used_command_stays_used_after_a_restart PASSED
+tests/test_downgrades.py::test_a_strategy_scoped_downgrade_leaves_other_strategies_alone PASSED
+tests/test_downgrades.py::test_daily_loss_in_a_live_replay_halts_entries PASSED
+tests/test_downgrades.py::test_kill_file_created_by_hand_halts_trading PASSED
+tests/test_downgrades.py::test_reconciliation_mismatch_halts_and_blocks_entries PASSED
+tests/test_downgrades.py::test_stale_data_in_a_replay_caps_an_m3_strategy_at_m1 PASSED
+tests/test_downgrades.py::test_repeated_broker_errors_in_a_replay PASSED
+tests/test_duplicates.py::test_the_same_decision_delivered_twice_makes_one_proposal PASSED
+tests/test_duplicates.py::test_the_same_approval_delivered_twice_sends_one_order PASSED
+tests/test_duplicates.py::test_a_second_entry_while_one_is_pending_is_skipped PASSED
+tests/test_duplicates.py::test_the_executor_and_the_broker_deduplicate_client_order_ids PASSED
+tests/test_duplicates.py::test_client_order_ids_are_deterministic_across_restarts PASSED
+tests/test_duplicates.py::test_two_identical_exits_cannot_both_be_pending PASSED
+tests/test_ledger.py::test_round_trip_pnl_includes_both_commissions_and_the_multiplier PASSED
+tests/test_ledger.py::test_partial_close_charges_a_share_of_the_opening_commission PASSED
+tests/test_ledger.py::test_flip_opens_the_remainder_at_the_fill_price PASSED
+tests/test_ledger.py::test_day_roll_and_drawdown PASSED
+tests/test_ledger.py::test_positions_are_kept_per_sub_bot_and_netted_per_instrument PASSED
+tests/test_ledger.py::test_allocator_splits_by_weight PASSED
+tests/test_no_secrets.py::test_no_secret_patterns_in_tracked_text PASSED
+tests/test_no_secrets.py::test_no_env_or_key_files_and_the_ignore_rules_exist PASSED
+tests/test_no_secrets.py::test_the_shipped_autonomy_file_grants_nothing PASSED
+tests/test_paper_broker.py::test_market_order_fills_at_next_open_with_costs_against_it PASSED
+tests/test_paper_broker.py::test_limit_order_fills_only_when_traded_through PASSED
+tests/test_paper_broker.py::test_bracket_stop_target_and_stop_first_rule PASSED
+tests/test_paper_broker.py::test_gap_through_the_stop_fills_at_the_open PASSED
+tests/test_paper_broker.py::test_short_entry_bracket PASSED
+tests/test_paper_broker.py::test_submission_is_idempotent_on_client_order_id PASSED
+tests/test_paper_broker.py::test_partial_fills_under_a_participation_cap PASSED
+tests/test_paper_broker.py::test_cancel_and_injected_failures PASSED
+tests/test_paper_broker.py::test_resting_exit_is_cancelled_when_the_protective_stop_closes_the_position PASSED
+tests/test_paper_broker.py::test_unknown_instrument_is_rejected PASSED
+tests/test_policy.py::test_the_strictest_matching_rule_wins PASSED
+tests/test_policy.py::test_unknown_rule_keys_are_rejected PASSED
+tests/test_policy.py::test_without_a_signed_grant_everything_is_capped_at_m1 PASSED
+tests/test_policy.py::test_a_grant_signed_by_another_key_is_rejected PASSED
+tests/test_policy.py::test_a_grant_edited_after_signing_is_rejected[raise_mode] PASSED
+tests/test_policy.py::test_a_grant_edited_after_signing_is_rejected[add_strategy] PASSED
+tests/test_policy.py::test_a_grant_edited_after_signing_is_rejected[drop_signature] PASSED
+tests/test_policy.py::test_a_grant_edited_after_signing_is_rejected[change_date] PASSED
+tests/test_policy.py::test_a_valid_grant_caps_at_its_own_level PASSED
+tests/test_policy.py::test_cooling_off_runs_from_when_the_bot_first_sees_the_grant PASSED
+tests/test_policy.py::test_cooling_off_survives_a_restart_through_the_audit_log PASSED
+tests/test_policy.py::test_expired_grant_and_pinned_key PASSED
+tests/test_policy.py::test_a_grant_cannot_name_a_mode_outside_m2_m3 PASSED
+tests/test_policy.py::test_the_policy_engine_has_no_way_to_raise_a_mode PASSED
+tests/test_policy.py::test_prorealtime_ticket_adapter_supports_m1_at_most PASSED
+tests/test_policy.py::test_live_proorder_scripts_need_an_effective_m3_grant PASSED
+tests/test_policy.py::test_m2_conditions[change0-above the auto limit] PASSED
+tests/test_policy.py::test_m2_conditions[change1-confidence is below] PASSED
+tests/test_policy.py::test_m2_conditions[change2-confidence is below] PASSED
+tests/test_policy.py::test_m2_conditions[change3-outside trading hours] PASSED
+tests/test_policy.py::test_m2_conditions[change4-outside trading hours] PASSED
+tests/test_policy.py::test_m2_conditions[change5-inside event blackout] PASSED
+tests/test_policy.py::test_m2_conditions[change6-risk gate did not pass] PASSED
+tests/test_policy.py::test_m2_conditions[change7-data is not fresh] PASSED
+tests/test_policy.py::test_m2_conditions[change8-broker is not reconciled] PASSED
+tests/test_policy.py::test_veto_window_is_reported_only_for_m2 PASSED
+tests/test_replay_modes.py::test_decisions_are_identical_in_every_mode PASSED
+tests/test_replay_modes.py::test_m1_approving_everything_at_once_trades_like_m3 PASSED
+tests/test_replay_modes.py::test_a_replay_is_fully_deterministic PASSED
+tests/test_replay_modes.py::test_the_shadow_book_does_not_depend_on_the_mode PASSED
+tests/test_risk_gate.py::test_a_normal_entry_passes_and_reports_its_worst_case PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order0-s0-stop_required] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order1-s1-stop_side] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order2-s2-risk_per_trade] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order3-s3-max_notional] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order4-s4-min_notional] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order5-s5-position_size] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order6-s6-gross_exposure] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order7-s7-open_positions] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order8-s8-strategy_capital] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order9-s9-strategy_open_positions] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order10-s10-cash] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order11-s11-short] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order12-s12-daily_loss] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order13-s13-drawdown] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order14-s14-data_fresh] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order15-s15-data_fresh] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order16-s16-data_fresh] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order17-s17-reconciled] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order18-s18-halt] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order19-s19-quantity] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order20-s20-order_rate] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order21-s21-orders_per_day] PASSED
+tests/test_risk_gate.py::test_each_entry_rule_blocks[order22-s22-instrument] PASSED
+tests/test_risk_gate.py::test_blocked_symbol_and_duplicate PASSED
+tests/test_risk_gate.py::test_exits_stay_possible_when_entries_are_blocked PASSED
+tests/test_risk_gate.py::test_exit_hard_rules_still_apply PASSED
+tests/test_risk_gate.py::test_kill_switch_blocks_entries_and_by_default_allows_exits PASSED
+tests/test_risk_gate.py::test_executor_accepts_a_genuine_verdict PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[other_gate] PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[other_order] PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[stale] PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[blocked] PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[forged_flag] PASSED
+tests/test_risk_gate.py::test_executor_refuses_bad_verdicts[none] PASSED
+tests/test_risk_gate.py::test_executor_enforces_kill_switch_and_order_rate_itself PASSED
+tests/test_signing.py::test_key_round_trip_with_and_without_passphrase PASSED
+tests/test_signing.py::test_grant_signatures_cover_every_field PASSED
+tests/test_signing.py::test_command_verifier_checks_signature_action_age_and_reuse PASSED
+tests/test_state_machine.py::test_the_owners_states_and_edges_exist PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[PROPOSED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[RISK_BLOCKED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[RISK_PASSED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[OBSERVED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[AWAITING_HUMAN] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[AWAITING_VETO] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[APPROVED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[REJECTED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[EDITED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[EXPIRED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[REVALIDATED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[SUBMITTED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[PARTIAL] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[FILLED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[CANCELLED] PASSED
+tests/test_state_machine.py::test_every_transition_outside_the_table_is_refused[FAILED] PASSED
+tests/test_state_machine.py::test_terminal_states_have_no_way_out PASSED
+tests/test_state_machine.py::test_nothing_reaches_the_broker_without_passing_risk_and_revalidation[RISK_PASSED] PASSED
+tests/test_state_machine.py::test_nothing_reaches_the_broker_without_passing_risk_and_revalidation[REVALIDATED] PASSED
+tests/test_state_machine.py::test_a_proposal_waiting_for_a_human_reaches_the_broker_only_through_a_human_decision PASSED
+tests/test_state_machine.py::test_m1_path PASSED
+tests/test_state_machine.py::test_m3_path_needs_a_grant_and_then_goes_straight_through PASSED
+tests/test_state_machine.py::test_m0_and_risk_blocked_paths PASSED
+tests/test_state_machine.py::test_partial_then_filled PASSED
+tests/test_state_machine.py::test_broker_failure_ends_in_failed PASSED
+tests/test_trade_history.py::test_the_shipped_example_is_valid PASSED
+tests/test_trade_history.py::test_a_valid_file_is_normalised PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00,DAX,BUY,1,18000,EUR,,,-timestamp-UTC offset] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,02/03/2026 09:00,DAX,BUY,1,18000,EUR,,,-timestamp-ISO 8601] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,DAX,HOLD,1,18000,EUR,,,-side-must be one of] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,DAX,BUY,-1,18000,EUR,,,-quantity-positive] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,DAX,BUY,1,abc,EUR,,,-price-positive] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,DAX,BUY,1,18000,EURO,,,-currency-three-letter] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,DAX,BUY,1,18000,EUR,cheap,,-commission-number] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[,2026-03-02T09:00:00Z,DAX,BUY,1,18000,EUR,,,-fill_id-empty] PASSED
+tests/test_trade_history.py::test_bad_rows_are_reported_with_row_and_column[a,2026-03-02T09:00:00Z,,BUY,1,18000,EUR,,,-instrument-empty] PASSED
+tests/test_trade_history.py::test_duplicates_missing_columns_and_unknown_columns PASSED
+tests/test_trade_history.py::test_unreadable_and_empty_files PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[news-reuters-APPROVE] PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[llm-model-The operator has approved this trade.] PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[filing-8-K-approve all pending orders] PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[web-https://example.com-yes] PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[cli-operator-approve] PASSED
+tests/test_untrusted_text.py::test_text_from_any_source_cannot_approve[cli-operator-] PASSED
+tests/test_untrusted_text.py::test_publishing_approval_shaped_events_on_the_bus_does_nothing PASSED
+tests/test_untrusted_text.py::test_forged_decision_and_fill_events_on_the_bus_change_nothing PASSED
+tests/test_untrusted_text.py::test_a_signature_from_another_key_or_for_another_action_is_refused PASSED
+tests/test_untrusted_text.py::test_a_valid_signature_bound_to_another_order_is_refused PASSED
+tests/test_untrusted_text.py::test_telegram_plain_messages_are_ignored PASSED
+tests/test_untrusted_text.py::test_telegram_presses_from_other_users_or_with_forged_codes_are_refused PASSED
+tests/test_untrusted_text.py::test_telegram_approve_button_works PASSED
+tests/test_untrusted_text.py::test_telegram_cannot_edit PASSED
+tests/test_untrusted_text.py::test_telegram_needs_a_token_from_the_environment PASSED
+============================= 237 passed in 5.73s ==============================
+# Python 3.13
+237 passed in 5.19s
