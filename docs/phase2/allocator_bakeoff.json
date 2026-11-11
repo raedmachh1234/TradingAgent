@@ -1,0 +1,349 @@
+{
+ "seed": 0,
+ "months": 240,
+ "names": [
+  "equities",
+  "government bonds",
+  "credit",
+  "real estate",
+  "commodities"
+ ],
+ "comparison": {
+  "reference": {
+   "min_variance": [
+    0.16764694197473845,
+    0.3999999999999999,
+    0.3999999999999999,
+    7.815566973494935e-18,
+    0.03235305802526156
+   ],
+   "max_sharpe": [
+    0.3323804092917455,
+    0.2676195907082545,
+    0.0,
+    0.0,
+    0.4000000000000001
+   ]
+  },
+  "libraries": {
+   "skfolio": {
+    "version": "1.12.9",
+    "min_variance": {
+     "weights": [
+      0.167645,
+      0.4,
+      0.4,
+      5e-06,
+      0.03235
+     ],
+     "max_abs_diff": 5.496029961690958e-06,
+     "violation": 0.0,
+     "objective_gap": 3.7529757102028327e-07,
+     "median_ms": 13.247297000006597
+    },
+    "max_sharpe": {
+     "weights": [
+      0.33235,
+      0.26765,
+      0.0,
+      0.0,
+      0.4
+     ],
+     "max_abs_diff": 3.061759377714912e-05,
+     "violation": 0.0,
+     "objective_gap": 2.0858916122135085e-09,
+     "median_ms": 14.713329499997485
+    }
+   },
+   "PyPortfolioOpt": {
+    "version": "1.6.0",
+    "min_variance": {
+     "weights": [
+      0.167647,
+      0.4,
+      0.4,
+      0.0,
+      0.032353
+     ],
+     "max_abs_diff": 1.1615342756371438e-07,
+     "violation": 0.0,
+     "objective_gap": -2.653433028854124e-13,
+     "median_ms": 5.23906250001005
+    },
+    "max_sharpe": {
+     "weights": [
+      0.33238,
+      0.26762,
+      0.0,
+      0.0,
+      0.4
+     ],
+     "max_abs_diff": 1.8289538772364722e-09,
+     "violation": 5.551115123125783e-17,
+     "objective_gap": 0.0,
+     "median_ms": 6.104630999999472
+    }
+   },
+   "Riskfolio-Lib": {
+    "version": "7.4.1",
+    "min_variance": {
+     "weights": [
+      0.167647,
+      0.4,
+      0.4,
+      0.0,
+      0.032353
+     ],
+     "max_abs_diff": 3.8478667819391577e-07,
+     "violation": 0.0,
+     "objective_gap": 8.615117952359697e-09,
+     "median_ms": 31.6926240000015
+    },
+    "max_sharpe": {
+     "weights": [
+      0.332381,
+      0.267619,
+      0.0,
+      0.0,
+      0.4
+     ],
+     "max_abs_diff": 1.6415357917409779e-07,
+     "violation": 0.0,
+     "objective_gap": 3.5602853998284445e-11,
+     "median_ms": 42.376051500014
+    }
+   }
+  }
+ },
+ "walk_forward": {
+  "reference": {
+   "months": 180,
+   "yearly_vol": 0.050868244454919005,
+   "yearly_return": 0.01924705242095485,
+   "sharpe": -0.0148019179178168
+  },
+  "skfolio": {
+   "months": 180,
+   "yearly_vol": 0.0508692655647713,
+   "yearly_return": 0.019248778766471103,
+   "sharpe": -0.01476768388905429
+  },
+  "PyPortfolioOpt": {
+   "months": 180,
+   "yearly_vol": 0.050868246395837,
+   "yearly_return": 0.01924704554296611,
+   "sharpe": -0.014802052564869083
+  },
+  "Riskfolio-Lib": {
+   "months": 180,
+   "yearly_vol": 0.05086824988275133,
+   "yearly_return": 0.019246677955609564,
+   "sharpe": -0.014809277813308016
+  },
+  "equal weights": {
+   "months": 180,
+   "yearly_vol": 0.069157297406106,
+   "yearly_return": 0.03201723428023601,
+   "sharpe": 0.17376668451440935
+  }
+ },
+ "passes": {
+  "skfolio": true,
+  "PyPortfolioOpt": true,
+  "Riskfolio-Lib": true
+ },
+ "footprint": {
+  "skfolio": [
+   "cffi",
+   "clarabel",
+   "cloudpickle",
+   "cvxpy-base",
+   "joblib",
+   "narwhals",
+   "numpy",
+   "packaging",
+   "pandas",
+   "plotly",
+   "pycparser",
+   "python-dateutil",
+   "qdldl",
+   "scikit-learn",
+   "scipy",
+   "sparsediffpy",
+   "threadpoolctl",
+   "tzdata"
+  ],
+  "PyPortfolioOpt": [
+   "cffi",
+   "clarabel",
+   "cloudpickle",
+   "cvxpy",
+   "highspy",
+   "jinja2",
+   "joblib",
+   "markupsafe",
+   "narwhals",
+   "numpy",
+   "osqp",
+   "pandas",
+   "pycparser",
+   "python-dateutil",
+   "qdldl",
+   "scikit-base",
+   "scikit-learn",
+   "scipy",
+   "scs",
+   "setuptools",
+   "sparsediffpy",
+   "threadpoolctl",
+   "typing-extensions",
+   "tzdata"
+  ],
+  "Riskfolio-Lib": [
+   "anywidget",
+   "arch",
+   "astropy",
+   "astropy-iers-data",
+   "asttokens",
+   "attrs",
+   "certifi",
+   "cffi",
+   "charset-normalizer",
+   "clarabel",
+   "cloudpickle",
+   "comm",
+   "contourpy",
+   "cvxpy",
+   "cycler",
+   "dateparser",
+   "dill",
+   "executing",
+   "fastjsonschema",
+   "fonttools",
+   "formulaic",
+   "highspy",
+   "idna",
+   "imageio",
+   "interface-meta",
+   "ipython",
+   "ipython-pygments-lexers",
+   "ipywidgets",
+   "jedi",
+   "jinja2",
+   "joblib",
+   "jsonschema",
+   "jsonschema-specifications",
+   "jupyter-core",
+   "jupyterlab-widgets",
+   "kiwisolver",
+   "llvmlite",
+   "markupsafe",
+   "matplotlib",
+   "matplotlib-inline",
+   "mypy-extensions",
+   "narwhals",
+   "nbformat",
+   "networkx",
+   "numba",
+   "numpy",
+   "osqp",
+   "packaging",
+   "pandas",
+   "parso",
+   "patsy",
+   "pexpect",
+   "pillow",
+   "platformdirs",
+   "plotly",
+   "prompt-toolkit",
+   "psutil",
+   "psygnal",
+   "ptyprocess",
+   "pure-eval",
+   "pybind11",
+   "pycparser",
+   "pyerfa",
+   "pygments",
+   "pyparsing",
+   "python-dateutil",
+   "pytz",
+   "pyyaml",
+   "qdldl",
+   "referencing",
+   "regex",
+   "requests",
+   "rpds-py",
+   "schedule",
+   "scikit-learn",
+   "scipy",
+   "scs",
+   "setuptools",
+   "sparsediffpy",
+   "stack-data",
+   "statsmodels",
+   "threadpoolctl",
+   "tqdm",
+   "traitlets",
+   "typing-extensions",
+   "tzdata",
+   "tzlocal",
+   "urllib3",
+   "vectorbt",
+   "wcwidth",
+   "widgetsnbextension",
+   "wrapt",
+   "xlsxwriter"
+  ]
+ },
+ "features": {
+  "skfolio": {
+   "walk_forward": true,
+   "purged_cv": true,
+   "cvar": true,
+   "drawdown": true,
+   "sklearn_api": true
+  },
+  "PyPortfolioOpt": {
+   "walk_forward": false,
+   "purged_cv": false,
+   "cvar": true,
+   "drawdown": true,
+   "sklearn_api": false
+  },
+  "Riskfolio-Lib": {
+   "walk_forward": false,
+   "purged_cv": false,
+   "cvar": true,
+   "drawdown": true,
+   "sklearn_api": false
+  }
+ },
+ "meta": {
+  "python": "3.11.18",
+  "numpy": "2.4.6",
+  "decision": {
+   "choice": "skfolio",
+   "reason": "skfolio passes and has 5 of 5 needed features, 18 dependencies, 14.0 ms per solve",
+   "ranking": [
+    {
+     "library": "skfolio",
+     "features": 5,
+     "dependencies": 18,
+     "ms_per_solve": 13.98
+    },
+    {
+     "library": "PyPortfolioOpt",
+     "features": 2,
+     "dependencies": 24,
+     "ms_per_solve": 5.67
+    },
+    {
+     "library": "Riskfolio-Lib",
+     "features": 2,
+     "dependencies": 93,
+     "ms_per_solve": 37.03
+    }
+   ]
+  }
+ }
+}

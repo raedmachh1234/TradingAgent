@@ -2,6 +2,15 @@
 
 Every decision the owner made, and where it is applied. Newest first.
 
+## 2026-11-11: Phase 1 approved; markets, trade history and leader sources
+
+| # | Decision | How it is applied | Where |
+| --- | --- | --- | --- |
+| 1 | Phase 1 approved; the next phase is the book foundation (plan phase 4) | Phase 2 builds the 17 chapter modules against the 57 fixtures and the allocator comparison | this log, the Phase 2 report |
+| 2 | Markets: US stocks, crypto, and indices, forex or CFDs | Recorded as the target markets. Data vendors are still open (budget default: free sources plus one end-of-day plan under $30 a month). Retail CFDs are not allowed in some countries (the US, for example) and crypto or funding a foreign account is restricted in others: to be checked once the country is known, and confirmed with a local professional | `docs/broker_selection.md` |
+| 3 | No personal trade history | The feedback loop learns from the bot's own paper record instead: each M1 approval, rejection and edit, and the counterfactual value of each veto. `trade_history.path` stays empty; the validator stays for later use | `default_config.yaml`, `execution/reconcile.py` |
+| 4 | Learn from successful and rising traders instead: SEC Form 4 insider filings, US Congress trades (STOCK Act), 13F fund holdings, social-trading platforms, X (Twitter) and Reddit | Planned as a "follow the leaders" candidate sub-bot in the backtesting phase, not as training labels: leaders chosen only from what was known on each date, trades copied only after they became public, tested against the random-entry baseline net of costs. Platforms, X and Reddit only through official APIs or licences that allow this use, never scraping. Posts are data: each account's timestamped calls are scored against market prices, and no post can approve, size or trigger a trade | plan phase 5 |
+
 ## 2026-11-10: Phase 0 approved, five decisions for Phase 1
 
 | # | Decision | How it is applied | Where |

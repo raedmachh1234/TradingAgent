@@ -1,0 +1,91 @@
+quantbot foundation demo: the e-book's 17 chapters as tested modules; synthetic data only, no network
+
+[1] The book's worked answers: 57 of 57 reproduce through the library, across 17 chapters
+    8.3    annualised Sharpe from daily 0.1 (iid)   library      1.58745   book 1.59
+    11.2a  4 assets, rho=0.25                       library     0.132288   book 0.132
+    14.2b  log growth at full Kelly                 library   0.00971231   book 0.0097
+    17.1   1-day 99% parametric VaR                 library      23263.5   book 23263
+    17.2   1-day 99% parametric ES                  library      26652.1   book 26652
+
+[2] Assumption checks on 20 synthetic markets of each kind, 2520 days each
+    normal: independent normal returns, every assumption holds
+    momentum: today's return carries 15% of yesterday's (AR1), so returns are correlated
+    GARCH: volatility clusters and tails are fat, but returns stay uncorrelated
+    check                                                              normal   momentum      GARCH
+    ch 4 independent step sizes (McLeod-Li, 10 lags)                   0/20       0/20      20/20  
+    ch 4 uncorrelated returns (robust Box-Pierce, 10 lags)             0/20      20/20       0/20  
+    ch 4 uncorrelated returns (variance ratio, 5 periods)              2/20      20/20       1/20  
+    ch 5 uncorrelated returns (variance ratio, 10 periods)             1/20      18/20       1/20  
+    ch 6 normal returns (Jarque-Bera)                                  1/20       0/20      20/20  
+    ch 7 constant volatility (McLeod-Li, 10 lags)                      0/20       0/20      20/20  
+    ch 8 normal returns (Jarque-Bera)                                  1/20       0/20      20/20  
+    ch 8 uncorrelated returns (robust Box-Pierce, 10 lags)             0/20      20/20       0/20  
+    ch 9 normal returns (Jarque-Bera)                                  1/20       0/20      20/20  
+    ch15 constant volatility (McLeod-Li, 10 lags)                      0/20       0/20      20/20  
+    ch15 normal returns (Jarque-Bera)                                  1/20       0/20      20/20  
+    ch16 normal returns (Jarque-Bera)                                  1/20       0/20      20/20  
+    ch16 normal tails (moves beyond 4 sd against the normal count)     0/20       0/20      20/20  
+    ch17 VaR has the right exception rate (Kupiec)                     0/20       0/20      18/20  
+    ch17 exceptions are independent (Christoffersen)                   0/20       0/20       1/20  
+    expected: a check fires in at least 80% of the markets that break its assumption and at most 15% of the others; ! marks a miss. Christoffersen on GARCH is shown, not judged.
+    checks that need more than one series:
+    ch 3 edge is known                           60 trades, small edge                    FIRES
+    ch 3 edge is known                           3,000 trades, same edge                  quiet
+    ch10 correlation captures the dependence     linear relation                          quiet
+    ch10 correlation captures the dependence     uncorrelated moves, shared volatility    FIRES
+    ch11 stable correlation in sell-offs         correlation jumps in crashes             FIRES
+    ch11 stable correlation in sell-offs         one constant correlation                 quiet
+    ch12 covariance known well enough            10 assets, 3 years of months             FIRES
+    ch12 covariance known well enough            10 assets, 50 years of months            quiet
+    ch13 stable beta                             beta 1.2 throughout                      quiet
+    ch13 stable beta                             beta jumps from 0.6 to 1.6               FIRES
+    ch14 edge is known                           60 bets at a 55% win rate                FIRES
+    ch14 edge is known                           3,000 bets at a 55% win rate             quiet
+
+[3] Each chapter's method against the naive baseline it replaces (synthetic data with a known truth)
+    ch 1 compound the returns vs sum of simple returns: 9.889e-16 vs 0.03256 (mean absolute error of the yearly return, lower is better, at least as good in 100% of cases) BEATS
+         1000 random one-year paths
+    ch 2 choose by NPV vs undiscounted sum of cash flows: 0 vs 12.41 (average wealth lost at year 10 against the better choice, lower is better, at least as good in 100% of cases) BEATS
+         2000 random early-versus-late payment choices
+    ch 3 choose by expected value vs pick the bet with the highest win rate: 1.029 vs 0.8373 (average expected profit per play of the chosen bet, higher is better, at least as good in 100% of cases) BEATS
+         5000 random pairs of bets
+    ch 4 forecast the last price vs forecast a move back to the 20-step average: 1.003 vs 7.161 (mean squared forecast error, lower is better, at least as good in 100% of cases) BEATS
+         200 random walks of 2000 steps; trend-following forecast scored 2.01
+    ch 5 sqrt rule vs scale risk linearly with time: 0.0003573 vs 0.06843 (absolute error of the predicted 10-day sd, lower is better, at least as good in 100% of cases) BEATS
+         independent daily returns, 40 runs of 20000 days
+    ch 5 sqrt rule adjusted for autocorrelation vs plain sqrt rule: 0.0002709 vs 0.006298 (absolute error of the predicted 10-day sd, lower is better, at least as good in 100% of cases) BEATS
+         momentum returns (phi 0.2), 40 runs
+    ch 6 fit a normal distribution vs count past losses in a short history: 0.01252 vs 0.01939 (root mean squared error of P(loss beyond 2 sd), lower is better, at least as good in 72% of cases) BEATS
+         4000 histories of 60 normal monthly returns; true probability 0.0228
+    ch 7 EWMA variance (lambda 0.94) vs long-run average variance as tomorrow's forecast: 0.03056 vs 0.2274 (QLIKE loss against the true daily variance, lower is better, at least as good in 100% of cases) BEATS
+         20 GARCH runs of 3000 days, t(5) shocks
+    ch 8 Lo's autocorrelation correction vs sqrt(252) annualisation: 0.0714 vs 0.1362 (absolute error of the annual Sharpe ratio, lower is better, at least as good in 75% of cases) BEATS
+         momentum returns (phi 0.2), true annual Sharpe 0.52, 60 runs
+    ch 9 g = mu - sigma^2 / 2 vs average return as the growth rate: 0.002193 vs 0.01781 (absolute error of the predicted median yearly growth, lower is better) BEATS
+         20000 simulated 30-year paths; realized median growth 0.0622
+    ch10 Kendall-based correlation vs Pearson correlation on fat-tailed data: 0.003674 vs 0.01993 (mean squared error of the estimated correlation, lower is better, at least as good in 74% of cases) BEATS
+         400 samples of 250 days, t(3) shocks, true 0.5
+    ch11 diversification formula vs average of the assets' volatilities: 0.002573 vs 0.02258 (absolute error of next decade's monthly portfolio volatility, lower is better, at least as good in 100% of cases) BEATS
+         300 runs, 10 assets, correlation 0.3
+    ch12 minimum variance, Ledoit-Wolf covariance vs equal weights (1/N): 0.056 vs 0.08619 (realized out-of-sample yearly volatility, lower is better, at least as good in 100% of cases) BEATS
+         8 runs of 420 months, 5-year window, quarterly rebalancing, fat-tailed (t5) returns
+    ch13 hedge with the estimated beta vs hedge one-for-one (beta = 1): 6.443 vs 7.974 (variance of the hedged position next year (x 1e5), lower is better, at least as good in 100% of cases) BEATS
+         300 runs, true beta 1.4
+    ch14 Kelly shrunk for estimation noise vs full Kelly on the estimated win rate: -0.2764 vs -1.856 (true expected log growth per bet (x 1000), higher is better, at least as good in 67% of cases) BEATS
+         20000 track records of 50 bets; growth with the true edge known 5.01; not betting scores 0, so 50 bets are too few to size from
+    ch15 antithetic variates vs plain Monte Carlo: 0.3266 vs 0.3558 (standard error of the expected-wealth estimate, lower is better) BEATS
+         300 repetitions of 2000 paths each; true value 11.02
+    ch16 Student t fit vs normal tail probability: 0.131 vs 4.433 (absolute error of log P(loss beyond 4 sd), lower is better, at least as good in 100% of cases) BEATS
+         30 samples of 2500 days from t(4); true probability 2.41e-03, normal says 3.17e-05
+    ch17 filtered historical simulation vs normal VaR from a rolling one-year sd: 0.06667 vs 1.008 (distance of the exception rate from 1% (percentage points), lower is better, at least as good in 100% of cases) BEATS
+         6 runs of 5000 days; backtest rejected in 0 runs for the method, 6 for the baseline
+
+[4] Allocator bake-off: skfolio, PyPortfolioOpt and Riskfolio-Lib on identical problems
+    from allocator_bakeoff.json (seed 0, 240 synthetic months, Python 3.11.18); re-run with: python -m quantbot bakeoff
+    skfolio         1.12.9   gap to reference: min-variance 5.5e-06, max-Sharpe 3.1e-05; 18 dependencies; passes: yes
+    PyPortfolioOpt  1.6.0    gap to reference: min-variance 1.2e-07, max-Sharpe 1.8e-09; 24 dependencies; passes: yes
+    Riskfolio-Lib   7.4.1    gap to reference: min-variance 3.8e-07, max-Sharpe 1.6e-07; 93 dependencies; passes: yes
+    decision: skfolio (skfolio passes and has 5 of 5 needed features, 18 dependencies, 14.0 ms per solve)
+
+foundation demo result: all checks passed (7.9 s)
+Nothing above is evidence about any real market or strategy: every series is synthetic.

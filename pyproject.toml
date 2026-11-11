@@ -11,6 +11,7 @@ requires-python = ">=3.11"
 license = { text = "MIT" }
 dependencies = [
     "numpy>=1.26",
+    "scipy>=1.11",
     "pandas>=2.1",
     "pyarrow>=15",
     "duckdb>=1.0",
@@ -21,6 +22,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+allocators = ["skfolio>=1.12"]
+# only to re-run the library comparison; Riskfolio-Lib pulls in vectorbt (Apache 2.0 with Commons Clause)
+bakeoff = ["PyPortfolioOpt>=1.6", "Riskfolio-Lib>=7.4"]
 
 [project.scripts]
 quantbot = "quantbot.cli:main"

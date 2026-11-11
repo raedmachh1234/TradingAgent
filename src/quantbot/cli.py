@@ -1,6 +1,8 @@
 """Command line.
 
-    python -m quantbot demo                     the one-command Phase 1 demonstration
+    python -m quantbot demo                     the one-command Phase 1 demonstration (the execution gate)
+    python -m quantbot demo foundation          the one-command Phase 2 demonstration (the book foundation)
+    python -m quantbot bakeoff                  re-run the allocator comparison and rewrite docs/phase2
     python -m quantbot paper                    interactive paper session: you approve, reject or edit each proposal
     python -m quantbot config                   print the effective configuration
     python -m quantbot log verify FILE          verify an audit log's hash chain
@@ -29,10 +31,30 @@ DEFAULT_PRIVATE_KEY = Path.home() / ".quantbot" / "operator_ed25519.key"
 
 
 def _cmd_demo(args: argparse.Namespace) -> int:
-    from .demo import run_demo
+    if args.which == "foundation":
+        from .foundation.demo import run_foundation_demo
 
-    result = run_demo(Path(args.workdir))
+        result = run_foundation_demo()
+    else:
+        from .demo import run_demo
+
+        result = run_demo(Path(args.workdir))
     return 0 if result["ok"] else 1
+
+
+def _cmd_bakeoff(args: argparse.Namespace) -> int:
+    from .foundation import allocators
+
+    missing = [lib for lib, v in allocators.available().items() if v is None]
+    if missing:
+        print(f"not installed: {', '.join(missing)}. Install them with: pip install -e \".[allocators,bakeoff]\"")
+    print("running the allocator bake-off (about half a minute)...")
+    result = allocators.run(seed=args.seed)
+    json_path, md_path = allocators.write_report(result, args.out)
+    decision = allocators.decide(result)
+    print(f"decision: {decision['choice']} ({decision['reason']})")
+    print(f"wrote {json_path} and {md_path}")
+    return 0 if decision["choice"] else 1
 
 
 def _cmd_config(args: argparse.Namespace) -> int:
@@ -169,9 +191,14 @@ def main(argv: list[str] | None = None) -> int:
     load_env_file()
     ap = argparse.ArgumentParser(prog="quantbot", description="Orchestrator for trading sub-bots with one execution gate.")
     sub = ap.add_subparsers(dest="command", required=True)
-    d = sub.add_parser("demo", help="run the Phase 1 demonstration (offline, paper, synthetic data)")
+    d = sub.add_parser("demo", help="run a demonstration: the execution gate (default) or the book foundation")
+    d.add_argument("which", nargs="?", choices=["gate", "foundation"], default="gate")
     d.add_argument("--workdir", default="data/demo")
     d.set_defaults(fn=_cmd_demo)
+    b = sub.add_parser("bakeoff", help="compare skfolio, PyPortfolioOpt and Riskfolio-Lib and write the report")
+    b.add_argument("--out", default="docs/phase2")
+    b.add_argument("--seed", type=int, default=0)
+    b.set_defaults(fn=_cmd_bakeoff)
     p = sub.add_parser("paper", help="interactive paper session with approvals at the prompt")
     p.add_argument("--bars", type=int, default=None, help="stop after this many bars")
     p.set_defaults(fn=_cmd_paper)

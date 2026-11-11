@@ -3,8 +3,10 @@
 An orchestrator for trading sub-bots with one execution gate and four modes: observe (M0), human-confirm (M1),
 auto-with-limits (M2) and full-auto (M3).
 
-**Status: Phase 1 complete.** Architecture, event bus, strategy registry, cached data layer and execution gate,
-running against a paper broker on synthetic data. There are no live credentials anywhere. Every strategy defaults
+**Status: Phase 2 complete.** Phase 1 built the architecture, event bus, strategy registry, cached data layer and
+execution gate, running against a paper broker on synthetic data. Phase 2 added the book foundation: the 17
+chapters of "Quantitative Finance From Scratch" as tested modules, each flagging data that breaks its assumptions,
+and a comparison of three portfolio libraries. There are no live credentials anywhere. Every strategy defaults
 to M1.
 
 Nothing in this repository is financial advice. No strategy here has been shown to be profitable; the two built-in
@@ -17,17 +19,22 @@ Requires Python 3.11 or newer. On Windows:
 ```
 py -3.11 -m venv .venv
 .venv\Scripts\activate
-pip install -e ".[dev]"
+pip install -e ".[dev,allocators]"
 python -m quantbot demo
+python -m quantbot demo foundation
 python -m pytest
 ```
 
-On Linux or macOS, use `python3 -m venv .venv` and `source .venv/bin/activate` instead.
+On Linux or macOS, use `python3 -m venv .venv` and `source .venv/bin/activate` instead. The `allocators` extra
+installs skfolio, the adopted portfolio library. Re-running the library comparison also needs the `bakeoff` extra
+(PyPortfolioOpt and Riskfolio-Lib); Riskfolio-Lib pulls in vectorbt, which is Apache 2.0 with Commons Clause.
 
 | Command | What it does |
 | --- | --- |
-| `python -m quantbot demo` | One-command demo, offline, about 2 seconds; prints its checks and exits 0 if all pass |
-| `python -m pytest` | 237 tests, about 6 seconds |
+| `python -m quantbot demo` | Phase 1 demo: the execution gate, offline, about 2 seconds; exits 0 if all its checks pass |
+| `python -m quantbot demo foundation` | Phase 2 demo: the book foundation, offline, about 10 seconds; exits 0 if all its checks pass |
+| `python -m quantbot bakeoff` | Re-runs the portfolio-library comparison and rewrites `docs/phase2/allocator_bakeoff.*` |
+| `python -m pytest` | 372 tests, about 30 seconds |
 | `python -m quantbot paper` | Interactive paper session: each proposal is shown and you approve, reject or edit it |
 | `python -m quantbot history check FILE` | Checks your trade-history CSV against [the import format](docs/trade_history_format.md) |
 | `python -m quantbot log verify FILE` | Verifies an audit log's hash chain |
@@ -80,6 +87,44 @@ Two design points carry most of the safety:
 | Kill switch, max order rate, max position, daily loss limit and reconciliation are on in every mode | `test_risk_gate.py`, `test_downgrades.py` |
 | The audit log is append-only and tamper-evident | `test_core.py` |
 | No secrets in the repository | `test_no_secrets.py` |
+| The book foundation only computes: it cannot reach a broker, the gate, a data store or the network | `test_architecture.py` |
+| Each foundation check fires on data that breaks its assumption and stays quiet otherwise; each method beats its baseline | `test_foundation_checks.py`, `test_foundation_baselines.py`, the foundation demo |
+
+## The book foundation (Phase 2)
+
+Each chapter of "Quantitative Finance From Scratch" is a module in `src/quantbot/foundation/`. Every module states
+its assumption, offers `check(...)` that flags data breaking it (at the 1% level), and `beat_baseline(seed)` that
+measures its method against the naive baseline it replaces, on synthetic data with a known truth. The book's 57
+worked answers are re-computed through these modules (`tests/test_foundation_fixtures.py`). Only the book's
+formulas are used; none of its code is copied.
+
+| Ch | Module | Assumption checked (test) | Baseline beaten |
+| --- | --- | --- | --- |
+| 1 | `returns` | none: exact arithmetic | adding simple returns |
+| 2 | `timevalue` | none: a known rate | the undiscounted sum |
+| 3 | `expectation` | edge distinguishable from zero (99% interval); independent results | picking the highest win rate |
+| 4 | `randomwalk` | uncorrelated returns (robust Box-Pierce, variance ratio); independent step sizes (McLeod-Li) | forecasting a reversal to the recent average |
+| 5 | `scaling` | uncorrelated returns (variance ratio) | linear scaling; plain sqrt rule under momentum |
+| 6 | `normal` | normal returns (Jarque-Bera) | counting past losses |
+| 7 | `volatility` | constant volatility (McLeod-Li) | the long-run average variance |
+| 8 | `sharpe` | uncorrelated (robust Box-Pierce) and normal returns | sqrt(252) annualisation |
+| 9 | `drag` | normal returns | the average return as the growth rate |
+| 10 | `correlation` | normal returns; dependence beyond correlation (rank correlation of move sizes) | Pearson on fat tails |
+| 11 | `diversification` | stable correlation on the worst days (against normal simulations) | the average of the volatilities |
+| 12 | `minvariance` | covariance known well enough (bootstrap of the weights) | equal weights |
+| 13 | `capm` | stable beta (first half against second half) | hedging one-for-one |
+| 14 | `kelly` | edge known (lower bound of the fraction); independent bets (runs test) | full Kelly on an estimated edge |
+| 15 | `montecarlo` | normal, unclustered shocks | plain Monte Carlo |
+| 16 | `tails` | normal tails (Jarque-Bera, count of 4-sd moves) | the normal tail probability |
+| 17 | `var` | right exception rate (Kupiec); independent exceptions (Christoffersen) | normal VaR from a rolling sd |
+
+The checks separate direction from size: volatility clustering alone does not make returns look predictable,
+because the autocorrelation tests are the heteroskedasticity-robust versions.
+
+**Portfolio library.** skfolio, PyPortfolioOpt and Riskfolio-Lib solved the same minimum-variance and maximum-Sharpe
+problems; all three matched the reference solver to within 1e-4. skfolio was chosen by the rule fixed before the
+run: it is the only one with walk-forward and purged cross-validation and a scikit-learn API, and it pulls in the
+fewest packages (18, against 24 and 93). Details: [docs/phase2/allocator_bakeoff.md](docs/phase2/allocator_bakeoff.md).
 
 ## Configuration
 
@@ -114,14 +159,23 @@ key: create the file `data/KILL`.
 | `src/quantbot/execution/` | policy engine, signed grants, approval service, proposals, executor, channels |
 | `src/quantbot/brokers/` | adapter interface with declared modes, paper broker |
 | `src/quantbot/portfolio/` | actual and shadow books, capital allocator |
+| `src/quantbot/foundation/` | the 17 book chapters, their assumption checks and baselines, the library comparison |
 | `config/` | example settings and the empty, unsigned autonomy file |
-| `docs/` | decisions log, broker criteria, trade-history format, ProOrder stop runbook, Phase 0 material |
+| `docs/` | decisions log, broker criteria, trade-history format, ProOrder stop runbook, phase outputs |
 | `_archive/` | the 59 cut skills, unchanged, with the reason each was cut |
 | `third_party/` | pristine sources of the 37 surviving skills and their licences |
 | `tools/` | Phase 0 audit scripts |
 
-## What is still weak after Phase 1
+## What is still weak after Phase 2
 
+- Every foundation result is on synthetic data with a known truth. It shows that each method works as designed and
+  that each check fires when it should; it says nothing yet about real markets.
+- The checks use a 1% significance level, and two of them use rules of thumb: minimum-variance weights count as
+  unstable when they move by more than half an equal weight, and the stress-correlation test compares the worst
+  10% of days. Running many checks at once raises the chance that one fires by luck.
+- Christoffersen's test of clustered VaR exceptions has little power with ten years of daily data.
+- The library comparison covers minimum variance and maximum Sharpe on one synthetic data set; hierarchical risk
+  parity and CVaR objectives are not compared yet. skfolio is adopted provisionally and stays an optional extra.
 - Only synthetic and CSV data providers exist; no market-data vendor is connected.
 - The Telegram channel is tested against a fake Bot API only. It is not yet wired into a long-running service.
 - Strategies decide from the shadow book. When the real book diverges after a veto, edit or delay, the gate caps

@@ -1,6 +1,6 @@
 # THIRD_PARTY
 
-Status: Phase 0 audit verified 2026-11-10; section 0 added in Phase 1.
+Status: Phase 0 audit verified 2026-11-10; section 0 added in Phase 1 and extended in Phase 2.
 "Last commit" is the committer date of the default-branch HEAD, read with a blobless depth-1 clone
 (`tools/repo_meta.sh`); the raw output is in `docs/phase0/repo_meta_raw.tsv`.
 "Licence" is what the LICENSE file in the repository says, not what a README or badge claims.
@@ -26,6 +26,30 @@ Versions as installed and tested on 2026-11-10 (Python 3.11.18 and 3.13.18). Lic
 | cryptography | 50.0.2 | Apache-2.0 OR BSD-3-Clause | Ed25519 operator signatures |
 | tzdata | 2026.6 | Apache-2.0 | time zones on Windows |
 | pytest (dev only) | 9.2.0 | MIT | tests |
+| scipy (Phase 2) | 1.17.1 (3.11), 1.18.1 (3.13) | BSD-3-Clause | statistical tests, optimisation, signal filter |
+
+Optional extras: `allocators` installs skfolio, the adopted library; `bakeoff` installs the two libraries it was
+compared with. Versions tested on 2026-11-11 on Python 3.11.18 and 3.13.18; licences from package metadata. The
+licence of every package the three pull in was read from its metadata: all are permissive (BSD, MIT, Apache, ISC, PSF,
+NCSA and similar) except three that only Riskfolio-Lib brings in: certifi and tqdm (MPL-2.0, file-level copyleft, used unmodified)
+and **vectorbt 1.2.0 (Apache 2.0 with Commons Clause)**. Under this file's rules Commons-Clause code is never
+imported: our code does not import vectorbt, a full comparison run leaves it unloaded (checked), and Riskfolio-Lib
+sits in the separate `bakeoff` extra so the normal install contains no Commons-Clause code. Riskfolio-Lib pulls in
+93 packages in total (`docs/phase2/allocator_bakeoff.json`, key `footprint`).
+
+| Package | Version tested | Licence | Used for |
+| --- | --- | --- | --- |
+| skfolio | 1.12.9 | BSD-3-Clause | portfolio optimisation, adopted after the bake-off |
+| PyPortfolioOpt | 1.6.0 | MIT | bake-off comparison only (`bakeoff` extra) |
+| Riskfolio-Lib | 7.4.1 | BSD-3-Clause (depends on vectorbt: Apache 2.0 with Commons Clause) | bake-off comparison only (`bakeoff` extra) |
+| cvxpy (via the three) | 1.9.3 | Apache-2.0 | convex solvers |
+| scikit-learn (via skfolio) | 1.9.1 | BSD-3-Clause | estimator API |
+
+**Book foundation (Phase 2).** `src/quantbot/foundation/` implements the formulas of "Quantitative Finance From
+Scratch" from their mathematical statements; no code from the book is copied, as its code licence is not stated.
+The statistical tests follow their published formulas: Ljung-Box, robust Box-Pierce, McLeod-Li, Jarque-Bera,
+Lo-MacKinlay variance ratio, Wald-Wolfowitz runs, Kupiec, Christoffersen, Hill, Ledoit-Wolf shrinkage, Lo's
+Sharpe-ratio correction, Mertens' standard error and the probabilistic Sharpe ratio of Bailey and Lopez de Prado.
 
 **Harvest status after Phase 1.** No code was copied from the base repositories. Phase 1 re-implements two designs
 from them, with credit: the risk verdict bound to one exact order by its fingerprint (trader-skill, `trader-risk`
@@ -84,7 +108,7 @@ Output is saved in `docs/phase0/smoke_results.txt`.
 | --- | --- | --- | --- | --- |
 | statsmodels/statsmodels | 2026-11-10 | BSD-3-Clause | 0.15.0 OK | adopt (ADF, Engle-Granger, Johansen, HAC) |
 | bashtage/arch | 2026-11-09 | NCSA | 8.0.0 OK | adopt (GARCH, bootstrap) |
-| skfolio/skfolio | 2026-11-08 | BSD-3-Clause | 1.12.8 OK | adopt as the one portfolio library (provisional; bake-off in Phase 4) |
+| skfolio/skfolio | 2026-11-08 | BSD-3-Clause | 1.12.8 OK | adopted as the one portfolio library after the Phase 2 bake-off (1.12.9) |
 | robertmartin8/PyPortfolioOpt | 2026-07-07 | MIT | 1.6.0 OK | comparison only |
 | dcajasn/Riskfolio-Lib | 2026-11-04 | BSD-3-Clause | 7.4.1 OK | comparison only |
 | vollib/py_vollib | 2026-04-30 | MIT | 1.0.12 OK | test oracle for our Black-Scholes |

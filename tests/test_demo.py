@@ -14,3 +14,15 @@ def test_demo(tmp_path):
     assert ops["approve"] > 0 and ops["reject"] > 0 and ops["edit"] > 0 and ops["unanswered"] > 0  # all four behaviours shown
     text = "\n".join(lines)
     assert "Nothing above is evidence that any strategy is profitable" in text
+
+
+def test_foundation_demo():
+    from quantbot.foundation.demo import run_foundation_demo
+
+    lines = []
+    result = run_foundation_demo(out=lines.append, seeds=10)
+    assert result["ok"], "\n".join(lines)
+    assert len(result["fixtures"]) == 57 and len(result["baselines"]) == 18
+    text = "\n".join(lines)
+    assert "57 of 57 reproduce" in text and "decision: skfolio" in text
+    assert "every series is synthetic" in text
